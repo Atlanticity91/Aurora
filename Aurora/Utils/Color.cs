@@ -24,27 +24,29 @@
  * 
  **/
 
-using Aurora.Repler;
 using System;
 
-namespace Aurora {
+namespace Aurora.Utils {
 
     /// <summary>
-    /// Program sealed class
+    /// Color sealed class
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined console utils code</note>
+    public sealed class Color {
+
+        public ConsoleColor Foreground { get; }
+        public ConsoleColor Background { get; }
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-
-            Console.WriteLine( "Hello World!" );
+        /// <param name="foreground" >Console foreground color</param>
+        /// <param name="background" >Console background color</param>
+        public Color( ConsoleColor foreground, ConsoleColor background ) {
+            this.Foreground = foreground;
+            this.Background = background;
         }
 
     }

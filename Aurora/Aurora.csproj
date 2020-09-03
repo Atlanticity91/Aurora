@@ -5,4 +5,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Analysis\" />
+    <Folder Include="Diagnostics\" />
+    <Folder Include="Runtime\" />
+  </ItemGroup>
+
 </Project>

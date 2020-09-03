@@ -24,28 +24,35 @@
  * 
  **/
 
-using Aurora.Repler;
+using Aurora.Utils;
 using System;
 
-namespace Aurora {
+namespace Aurora.Repler {
 
     /// <summary>
-    /// Program sealed class
+    /// ReplConsole class
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Define Aurora default console repl code</note>
+    public class ReplConsole {
+
+        public ReplConsoleStyle Style { get; private set; }
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-
-            Console.WriteLine( "Hello World!" );
+        public ReplConsole( ) {
+            this.Style = new ReplConsoleStyle( "Default" );
         }
+
+        /// <summary>
+        /// SetStyle method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Set current repl console style</note>
+        /// <typeparam name="T"></typeparam>
+        public void SetStyle<T>( ) where T : ReplConsoleStyle, new() => this.Style = new T( );
 
     }
 

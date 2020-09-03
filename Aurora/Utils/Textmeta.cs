@@ -24,27 +24,32 @@
  * 
  **/
 
-using Aurora.Repler;
-using System;
-
-namespace Aurora {
+namespace Aurora.Utils {
 
     /// <summary>
-    /// Program sealed class
+    /// Textmeta sealed  class
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Define text metadata</note>
+    public sealed class Textmeta {
+
+        public int Line { get; }
+        public int Position { get; }
+        public string Value { get; }
+
+        public int Size => this.Value.Length;
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-
-            Console.WriteLine( "Hello World!" );
+        /// <param name="line" >Line of the source text that contain data</param>
+        /// <param name="position" >Offset from line start</param>
+        /// <param name="value" >Text store on the metadata</param>
+        public Textmeta( int line, int Position, string value ) {
+            this.Line = line;
+            this.Position = Position;
+            this.Value = value;
         }
 
     }
