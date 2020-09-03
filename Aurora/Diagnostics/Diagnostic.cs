@@ -24,37 +24,47 @@
  * 
  **/
 
-using Aurora.Analysis;
-using Aurora.Repler;
+using Aurora.Utils;
 
-namespace Aurora {
+namespace Aurora.Diagnostics {
 
     /// <summary>
-    /// Program sealed class
+    /// EDiagnosticTypes enum
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined all diagnostic types</note>
+    public enum EDiagnosticTypes {
+
+        EDT_INFO,
+        EDT_WARN,
+        EDT_ERRR,
+
+    }
+
+    /// <summary>
+    /// Diagnostic sealed class
+    /// </summary>
+    /// <author>ALVES Quentin</author>
+    /// <note>Defined Aurora Diagnostic code support</note>
+    public sealed class Diagnostic {
+
+        public EDiagnosticTypes Type { get; }
+        public string Message { get; }
+        public Textmeta Meta { get; }
+
+        public bool HasMeta => this.Meta != null;
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-            var compiler = new Compiler( );
-
-            var result = compiler.Compile( "4 + 5 * 0" );
-
-            // Display all compilation error
-            console.Display( compiler );
-
-            // Display current compilation token list
-            console.Display( compiler.Tokens );
-
-            // Display current compilation syntax node list
-            console.Display( compiler.Nodes );
+        /// <param name="type" >Type of diagnostic</param>
+        /// <param name="message" >Message of the diagnostic</param>
+        /// <param name="meta" >Metadata of the diagnostic</param>
+        public Diagnostic( EDiagnosticTypes type, string message, Textmeta meta ) {
+            this.Type = type;
+            this.Message = message;
+            this.Meta = meta;
         }
 
     }

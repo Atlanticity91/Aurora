@@ -56,7 +56,7 @@ namespace Aurora.Repler {
         public ReplConsoleStyle( string name ) {
             this.Name = name;
 
-            this.Background = ConsoleColor.White;
+            this.Background = ConsoleColor.Black;
             this.Text = new Color( ConsoleColor.Gray, this.Background );
             this.Keyword = new Color( ConsoleColor.Blue, this.Background );
             this.Literal = new Color( ConsoleColor.DarkGray, this.Background );

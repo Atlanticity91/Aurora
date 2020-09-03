@@ -24,37 +24,50 @@
  * 
  **/
 
-using Aurora.Analysis;
-using Aurora.Repler;
+using Aurora.Analysis.Lexem;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Aurora {
+namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// Program sealed class
+    /// ENodeTypes enum
+    /// </summary>
+    /// <note>Defined Aurora syntax node types enum</note>
+    public enum ENodeTypes {
+
+
+
+    }
+
+    /// <summary>
+    /// SyntaxNode class 
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined Aurora syntax node core class</note>
+    public class SyntaxNode {
+
+        public ENodeTypes Type { get; }
+        public Token Token { get; }
+
+        public ETokenTypes TokenType => this.Token.Type;
+
+        public virtual IEnumerable<Token> Tokens {
+            get { yield return this.Token; }
+        }
+
+        public virtual IEnumerable<SyntaxNode> Childs {
+            get { return Enumerable.Empty<SyntaxNode>( ); }
+        }
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-            var compiler = new Compiler( );
-
-            var result = compiler.Compile( "4 + 5 * 0" );
-
-            // Display all compilation error
-            console.Display( compiler );
-
-            // Display current compilation token list
-            console.Display( compiler.Tokens );
-
-            // Display current compilation syntax node list
-            console.Display( compiler.Nodes );
+        /// <param name="type" >Type of the new syntax node</param>
+        /// <param name="token" >Token that generate the node</param>
+        public SyntaxNode( ENodeTypes type, Token token ) {
+            this.Type = type;
+            this.Token = token;
         }
 
     }

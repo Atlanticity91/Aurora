@@ -24,50 +24,49 @@
  * 
  **/
 
+using Aurora.Analysis.Syntax;
+using Aurora.Diagnostics;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
-namespace Aurora.Utils {
+namespace Aurora.Analysis.Assembly {
 
     /// <summary>
-    /// File internal class
+    /// Assembler class [ Diagnosable ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Define text metadata</note>
-    internal class File {
+    /// <note>Defined Aurora assembler core class</note>
+    public class Assembler : Diagnosable {
+
+        public object Script { get; }
 
         /// <summary>
-        /// Load static function
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="path" >Path to the file to load</param>
-        /// <returns>bool</returns>
-        public static bool Load( ref List<string> lines, string path ) {
-            if ( !string.IsNullOrEmpty( path ) ) {
-                using ( StreamReader reader = new StreamReader( path, Encoding.UTF8 ) ) {
-                    while ( !reader.EndOfStream )
-                        lines.Add( reader.ReadLine( ) );
-
-                    return true;
-                }
-            }
-
-            return false;
+        public Assembler( )
+            : base( "Assembler" ) 
+        {
+            this.Script = null;
         }
 
         /// <summary>
-        /// Write static method
+        /// Prepare virtual function
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <typeparam name="T" >Type of the data to write</typeparam>
-        /// <param name="path" >Path to the file to write</param>
-        /// <param name="lines" >Collection of string thats corespond to lines to write</param>
-        public static void Write<T>( string path, IEnumerable<T> lines ) {
-            using ( StreamWriter writer = new StreamWriter( path, true, Encoding.UTF8 ) ) {
-                foreach ( var line in lines )
-                    writer.Write( line );
-            }
+        /// <note>Prepare the analyser for compilation</note>
+        protected virtual void Prepare( ) => this.ClearDiags( );
+
+        /// <summary>
+        /// Parse function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Parse syntax nodes to pre usable aurora binary</note>
+        /// <param name="nodes" >Current syntax node list</param>
+        /// <returns>DiagnosticReport</returns>
+        public DiagnosticReport Parse( IEnumerable<SyntaxNode> nodes ) {
+            this.Prepare( );
+
+            return this.Report;
         }
 
     }

@@ -6,8 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Analysis\" />
-    <Folder Include="Diagnostics\" />
     <Folder Include="Runtime\" />
   </ItemGroup>
 
