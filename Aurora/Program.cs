@@ -45,7 +45,7 @@ namespace Aurora {
             var console = new ReplConsole( );
             var compiler = new Compiler( );
 
-            var result = compiler.Compile( "4 + 5 * 0" );
+            var result = compiler.Compile( "10 + 5 * 2;\n( 2 + 5 ) * 20" );
 
             // Display all compilation error
             console.Display( compiler );

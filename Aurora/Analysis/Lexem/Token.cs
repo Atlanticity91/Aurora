@@ -38,8 +38,10 @@ namespace Aurora.Analysis.Lexem {
         ETT_EOF,
         ETT_UNKNOW,
         ETT_BLANK,
+        
         ETT_IDENTIFIER,
         ETT_KEYWORD,
+
         ETT_LITERAL,
         ETT_HEX_LITERAL,
         ETT_BIN_LITERAL,
