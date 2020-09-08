@@ -26,62 +26,42 @@
 
 using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// ENodeTypes enum
-    /// </summary>
-    /// <note>Defined Aurora syntax node types enum</note>
-    public enum ENodeTypes {
-
-        ENT_EOF,
-        ENT_IDENTIFIER,
-        ENT_LITERAL,
-        ENT_EXPRESSION,
-
-    }
-
-    /// <summary>
-    /// SyntaxNode class 
+    /// ParanthesisExpressionNode class [ ExpressionNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora syntax node core class</note>
-    public class SyntaxNode {
+    /// <note>Defined Aurora paranthesis expression node core class</note>
+    public class ParanthesisExpressionNode : ExpressionNode {
 
-        public ENodeTypes Type { get; }
-        public Token Token { get; }
+        public Token Close { get; }
+        public SyntaxNode Expression { get; }
 
-        public ETokenTypes TokenType => this.Token.Type;
-
-        public virtual IEnumerable<Token> Tokens {
-            get { yield return this.Token; }
+        public override IEnumerable<Token> Tokens {
+            get {
+                yield return this.Token;
+                yield return this.Close;
+            }
         }
 
-        public virtual IEnumerable<SyntaxNode> Childs {
-            get { return Enumerable.Empty<SyntaxNode>( ); }
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <param name="token" >Token that generate the node</param>
-        public SyntaxNode( Token token ) {
-            this.Type = ( token.Type == ETokenTypes.ETT_EOF ) ? ENodeTypes.ENT_EOF : ENodeTypes.ENT_IDENTIFIER;
-            this.Token = token;
+        public override IEnumerable<SyntaxNode> Childs {
+            get { yield return this.Expression; }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="type" >Type of the new syntax node</param>
-        /// <param name="token" >Token that generate the node</param>
-        public SyntaxNode( ENodeTypes type, Token token ) {
-            this.Type = type;
-            this.Token = token;
+        /// <param name="open" >Current open paranthesis</param>
+        /// <param name="close" >Current close paranthesis</param>
+        /// <param name="expression" >Current expression </param>
+        public ParanthesisExpressionNode( Token open, Token close, SyntaxNode expression )
+            : base( open ) 
+        {
+            this.Close = close;
+            this.Expression = expression;
         }
 
     }

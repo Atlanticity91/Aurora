@@ -59,10 +59,10 @@ namespace Aurora.Repler {
             this.Background = ConsoleColor.Black;
             this.Text = new Color( ConsoleColor.Gray, this.Background );
             this.Keyword = new Color( ConsoleColor.Blue, this.Background );
-            this.Literal = new Color( ConsoleColor.DarkGray, this.Background );
+            this.Literal = new Color( ConsoleColor.Cyan, this.Background );
             this.Operator = new Color( ConsoleColor.DarkYellow, this.Background );
             this.Separator = new Color( ConsoleColor.DarkGray, this.Background );
-            this.String = new Color( ConsoleColor.DarkCyan, this.Background );
+            this.String = new Color( ConsoleColor.Magenta, this.Background );
             this.InfoDiag = new Color( ConsoleColor.DarkGreen, this.Background );
             this.WarnDiag = new Color( ConsoleColor.DarkYellow, this.Background );
             this.ErrorDiag = new Color( ConsoleColor.DarkRed, this.Background );

@@ -24,37 +24,37 @@
  * 
  **/
 
-using Aurora.Analysis;
-using Aurora.Repler;
-
-namespace Aurora {
+namespace Aurora.Analysis.Lexem {
 
     /// <summary>
-    /// Program sealed class
+    /// TokenPrecedence static class
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined Aurora token precedence</note>
+    public static class TokenPrecedence {
 
         /// <summary>
-        /// Main static method
+        /// Precedence static extension function
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-            var compiler = new Compiler( );
+        /// <note>Get current token precedence value</note>
+        /// <param name="token" >Current token</param>
+        /// <returns>int</returns>
+        public static int Precedence( this Token token ) {
+            if ( token != null ) {
+                switch ( token.Type ) {
+                    case ETokenTypes.ETT_OP_ADD :
+                    case ETokenTypes.ETT_OP_SUB : return 1;
 
-            var result = compiler.Compile( "10 + 5 * 2;\n( 2 + 5 ) * 20;\n" );
+                    case ETokenTypes.ETT_OP_MUL :
+                    case ETokenTypes.ETT_OP_DIV :
+                    case ETokenTypes.ETT_OP_MOD : return 2;
 
-            // Display all compilation error
-            console.Display( compiler );
+                    default: break;
+                }
+            }
 
-            // Display current compilation token list
-            console.Display( compiler.Tokens );
-
-            // Display current compilation syntax node list
-            console.Display( compiler.Nodes );
+            return 0;
         }
 
     }

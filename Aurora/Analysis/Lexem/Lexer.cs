@@ -183,9 +183,12 @@ namespace Aurora.Analysis.Lexem {
                 while ( char_id < chars.Length && chars[ char_id ].GetCharType( ) == old );
 
                 var span = text.Substring( start, char_id - start );
-                var token = this.Parse( line, char_id, span );
-                
-                this.tokens.Add( token );
+
+                if ( !span.IsBlank( ) ) {
+                    var token = this.Parse( line, char_id, span );
+
+                    this.tokens.Add( token );
+                }
                 
                 start = char_id;
             }

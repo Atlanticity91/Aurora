@@ -27,6 +27,7 @@
 using Aurora.Analysis.Lexem;
 using Aurora.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aurora.Analysis.Syntax {
 
@@ -37,7 +38,8 @@ namespace Aurora.Analysis.Syntax {
     /// <note>Defined Aurora syntaxer core class</note>
     public class Syntaxer : Diagnosable {
 
-        public List<SyntaxNode> nodes;
+        private List<SyntaxNode> nodes;
+        private int current;
 
         public IEnumerable<SyntaxNode> Nodes => this.nodes;
 
@@ -59,6 +61,106 @@ namespace Aurora.Analysis.Syntax {
         protected virtual void Prepare( ) {
             this.ClearDiags( );
             this.nodes.Clear( );
+            this.current = 0;
+        }
+
+        /// <summary>
+        /// Current function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Get current token from the token list</note>
+        /// <param name="tokens" >Current token enumerable</param>
+        /// <returns>Token</returns>
+        protected Token Current( IEnumerable<Token> tokens ) {
+            if ( this.current < tokens.Count( ) )
+                return tokens.ElementAt( this.current );
+
+            return tokens.ElementAt( this.current - 1 );
+        }
+
+        /// <summary>
+        /// Next function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Get next token of the token list</note>
+        /// <param name="tokens" >Current token enumerable</param>
+        /// <returns>Token</returns>
+        protected Token Next( IEnumerable<Token> tokens ) {
+            if ( this.current < tokens.Count( ) )
+                return tokens.ElementAt( this.current++ );
+
+            return tokens.ElementAt( tokens.Count( ) - 1 );
+        }
+
+        /// <summary>
+        /// Match function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Verify if the current token match a specific token type</note>
+        /// <param name="tokens" >Current token enumerable</param>
+        /// <param name="query" >Query token type</param>
+        /// <returns>Token</returns>
+        protected Token Match( IEnumerable<Token> tokens, ETokenTypes query ) {
+            var current =this.Current( tokens );
+
+            if ( current.Type != query )
+                this.EmitErrr( $"Unexpected token {current.Type}, expected {query}", current.Meta );
+
+            return this.Next( tokens );
+        }
+
+        /// <summary>
+        /// ParseToken virtual function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Parse current token to syntax node</note>
+        /// <param name="tokens" >Current token enumerable</param>
+        /// <returns>SyntaxNode</returns>
+        protected virtual SyntaxNode ParseToken( IEnumerable<Token> tokens ) {
+            var token = this.Next( tokens );
+
+            if ( token.IsLiteral )
+                return new SyntaxNode( ENodeTypes.ENT_LITERAL, token );
+            else if ( token.IsOperator ) {
+                var precedence = token.Precedence( );
+                var operand = this.ParseSyntax( tokens, precedence );
+
+                return new UnaryExpressionNode( token, operand );
+            } else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS ) {
+                var expression = this.ParseSyntax( tokens, 0 );
+                var close = this.Match( tokens, ETokenTypes.ETT_SEP_CLOSE_PARANTHESIS );
+
+                return new ParanthesisExpressionNode( token, close, expression );
+            } else if ( token.Type != ETokenTypes.ETT_IDENTIFIER )
+                this.EmitErrr( $"Unexpected token type {token.Type}.", token.Meta );
+
+            return new SyntaxNode( token );
+        }
+
+        /// <summary>
+        /// ParseSyntax virtual function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Parse tokens to syntax tree</note>
+        /// <param name="tokens" >Current token enumerable</param>
+        /// <param name="precedence" >Precedence value from parent call</param>
+        /// <returns>SyntaxNode</returns>
+        protected virtual SyntaxNode ParseSyntax( IEnumerable<Token> tokens, int precedence ) {
+            var root = this.ParseToken( tokens );
+
+            while ( this.Current( tokens ).IsOperator ) {
+                var _operator = this.Next( tokens );
+                var _precedence = _operator.Precedence( );
+
+                if ( _precedence == 0 || _precedence <= precedence )
+                    break;
+
+                var right = this.ParseSyntax( tokens, _precedence );
+
+                root = new BinaryExpressionNode( _operator, root, right );
+            }
+
+            return root;
         }
 
         /// <summary>
@@ -70,6 +172,14 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>DiagnosticReport</returns>
         public DiagnosticReport Parse( IEnumerable<Token> tokens ) {
             this.Prepare( );
+
+            var root = (SyntaxNode)null;
+
+            do {
+                root = this.ParseSyntax( tokens, 0 );
+
+                this.nodes.Add( root );
+            } while ( root.Type != ENodeTypes.ENT_EOF );
 
             return this.Report;
         }

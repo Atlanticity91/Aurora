@@ -26,62 +26,32 @@
 
 using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// ENodeTypes enum
-    /// </summary>
-    /// <note>Defined Aurora syntax node types enum</note>
-    public enum ENodeTypes {
-
-        ENT_EOF,
-        ENT_IDENTIFIER,
-        ENT_LITERAL,
-        ENT_EXPRESSION,
-
-    }
-
-    /// <summary>
-    /// SyntaxNode class 
+    /// UnaryExpressionNode class [ SyntaxNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora syntax node core class</note>
-    public class SyntaxNode {
+    /// <note>Defined Aurora unary expression node core class</note>
+    public class UnaryExpressionNode : ExpressionNode {
 
-        public ENodeTypes Type { get; }
-        public Token Token { get; }
+        public SyntaxNode Operand { get; }
 
-        public ETokenTypes TokenType => this.Token.Type;
-
-        public virtual IEnumerable<Token> Tokens {
-            get { yield return this.Token; }
-        }
-
-        public virtual IEnumerable<SyntaxNode> Childs {
-            get { return Enumerable.Empty<SyntaxNode>( ); }
+        public override IEnumerable<SyntaxNode> Childs {
+            get { yield return this.Operand; }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="token" >Token that generate the node</param>
-        public SyntaxNode( Token token ) {
-            this.Type = ( token.Type == ETokenTypes.ETT_EOF ) ? ENodeTypes.ENT_EOF : ENodeTypes.ENT_IDENTIFIER;
-            this.Token = token;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <param name="type" >Type of the new syntax node</param>
-        /// <param name="token" >Token that generate the node</param>
-        public SyntaxNode( ENodeTypes type, Token token ) {
-            this.Type = type;
-            this.Token = token;
+        /// <param name="operator_" >Current expression operator</param>
+        /// <param name="operand" >Current expression operand</param>
+        public UnaryExpressionNode( Token operator_, SyntaxNode operand )
+            : base( operator_ ) 
+        {
+            this.Operand = operand; 
         }
 
     }
