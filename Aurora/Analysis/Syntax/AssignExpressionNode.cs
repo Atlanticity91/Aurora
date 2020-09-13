@@ -24,37 +24,38 @@
  * 
  **/
 
-using Aurora.Analysis;
-using Aurora.Repler;
+using Aurora.Analysis.Lexem;
+using System.Collections.Generic;
 
-namespace Aurora {
+namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// Program sealed class
+    /// AssignExpressionNode class [ ExpressionNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined Aurora assignement expression node core class</note>
+    public class AssignExpressionNode : ExpressionNode {
+
+        public SyntaxNode Identifier { get; }
+        public SyntaxNode Expression { get; }
+
+        public override IEnumerable<SyntaxNode> Childs {
+            get {
+                yield return this.Identifier;
+                yield return this.Expression;
+            }
+        }
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-            var compiler = new Compiler( );
-
-            var result = compiler.Compile( "10 + 5 * 5 * 500;\n50 + 5 * 5;" );
-
-            // Display all compilation error
-            console.Display( compiler );
-
-            // Display current compilation token list
-            console.Display( compiler.Tokens );
-
-            // Display current compilation syntax node list
-            console.Display( compiler.Nodes );
+        /// <param name="equal" >Current expression equal operator</param>
+        public AssignExpressionNode( Token equal, SyntaxNode identifier, SyntaxNode expression )
+            : base( equal ) 
+        {
+            this.Identifier = identifier;
+            this.Expression = expression;
         }
 
     }

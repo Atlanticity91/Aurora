@@ -40,7 +40,7 @@ namespace Aurora.Analysis.Syntax {
         ENT_IDENTIFIER,
         ENT_LITERAL,
         ENT_EXPRESSION,
-
+        ENT_SEMICOLON,
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ namespace Aurora.Analysis.Syntax {
         /// <author>ALVES Quentin</author>
         /// <param name="token" >Token that generate the node</param>
         public SyntaxNode( Token token ) {
-            this.Type = ( token.Type == ETokenTypes.ETT_EOF ) ? ENodeTypes.ENT_EOF : ENodeTypes.ENT_IDENTIFIER;
+            this.Type = ( token.Type == ETokenTypes.ETT_EOF ) ? ENodeTypes.ENT_EOF : ENodeTypes.ENT_SEMICOLON;
             this.Token = token;
         }
 

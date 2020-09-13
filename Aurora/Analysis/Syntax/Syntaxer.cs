@@ -121,18 +121,16 @@ namespace Aurora.Analysis.Syntax {
 
             if ( token.IsLiteral )
                 return new SyntaxNode( ENodeTypes.ENT_LITERAL, token );
-            else if ( token.IsOperator ) {
-                var precedence = token.Precedence( );
-                var operand = this.ParseSyntax( tokens, precedence );
-
-                return new UnaryExpressionNode( token, operand );
-            } else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS ) {
+            else if ( token.Type == ETokenTypes.ETT_IDENTIFIER )
+                return new SyntaxNode( ENodeTypes.ENT_IDENTIFIER, token );
+            else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS ) {
                 var expression = this.ParseSyntax( tokens, 0 );
                 var close = this.Match( tokens, ETokenTypes.ETT_SEP_CLOSE_PARANTHESIS );
 
                 return new ParanthesisExpressionNode( token, close, expression );
-            } else if ( token.Type != ETokenTypes.ETT_IDENTIFIER )
-                this.EmitErrr( $"Unexpected token type {token.Type}.", token.Meta );
+            }
+            
+            this.EmitErrr( $"Unexpected token type {token.Type}.", token.Meta );
 
             return new SyntaxNode( token );
         }

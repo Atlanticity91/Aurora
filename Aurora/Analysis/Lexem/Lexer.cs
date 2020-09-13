@@ -171,7 +171,7 @@ namespace Aurora.Analysis.Lexem {
         /// <note>Parse line to tokens</note>
         /// <param name="text" >Query text of the line</param>
         /// <returns>DiagnosticReport</returns>
-        protected DiagnosticReport Parse( string text, int line = 0 ) {
+        protected DiagnosticReport Parse( string text, ref int line ) {
             var chars = text.ToCharArray( );
             var char_id = 0;
             var start = 0;
@@ -188,8 +188,9 @@ namespace Aurora.Analysis.Lexem {
                     var token = this.Parse( line, char_id, span );
 
                     this.tokens.Add( token );
-                }
-                
+                } else if ( span.Contains( "\n" ) )
+                    line += 1;
+
                 start = char_id;
             }
 
@@ -209,8 +210,11 @@ namespace Aurora.Analysis.Lexem {
             if ( lines != null ) {
                 var line_id = 0;
 
-                foreach ( var line in lines )
-                    this.Merge( this.Parse( line, line_id++ ) );
+                foreach ( var line in lines ) {
+                    this.Merge( this.Parse( line, ref line_id ) );
+
+                    line_id += 1;
+                }
 
                 this.tokens.Add( new Token( lines.Count( ) ) );
             } else

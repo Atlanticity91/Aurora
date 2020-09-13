@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurora", "Aurora\Aurora.csproj", "{45E3EF77-C587-4504-A4CB-8ADA6B0A2FB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aurora", "Aurora\Aurora.csproj", "{45E3EF77-C587-4504-A4CB-8ADA6B0A2FB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuroraTest", "AuroraTest\AuroraTest.csproj", "{C38388EF-E9AC-4988-A921-02D501322AFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{45E3EF77-C587-4504-A4CB-8ADA6B0A2FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45E3EF77-C587-4504-A4CB-8ADA6B0A2FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45E3EF77-C587-4504-A4CB-8ADA6B0A2FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C38388EF-E9AC-4988-A921-02D501322AFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C38388EF-E9AC-4988-A921-02D501322AFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C38388EF-E9AC-4988-A921-02D501322AFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C38388EF-E9AC-4988-A921-02D501322AFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
