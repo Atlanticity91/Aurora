@@ -25,6 +25,7 @@
  **/
 
 using Aurora.Analysis.Lexem;
+using System.Linq;
 using Xunit;
 
 namespace AuroraTest {
@@ -35,6 +36,105 @@ namespace AuroraTest {
     /// <author>ALVES Quentin</author>
     /// <note>Defined Aurora lexer core test</note>
     public class LexerTest {
+
+        /// <summary>
+        /// Parse function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Defined aurora lexer wrapper</note>
+        /// <param name="text"></param>
+        /// <returns>Token[]</returns>
+        private Token[] Parse( string text ) {
+            var lexer = new Lexer( );
+            lexer.Parse( new string[] { text } );
+
+            return lexer.Tokens.ToArray( );
+        }
+
+        /// <summary>
+        /// Lexer_ParseSimple method 
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Defined test for single token generation</note>
+        [Theory]
+        [InlineData( "var", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "if", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "else", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "for", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "foreach", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "while", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "end", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "then", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "true", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "false", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "function", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "return", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "break", ETokenTypes.ETT_KEYWORD )]
+        [InlineData( "=", ETokenTypes.ETT_OP_ASIGN )]
+        [InlineData( "+", ETokenTypes.ETT_OP_ADD )]
+        [InlineData( "+=", ETokenTypes.ETT_OP_AEQU )]
+        [InlineData( "-", ETokenTypes.ETT_OP_SUB )]
+        [InlineData( "-=", ETokenTypes.ETT_OP_SBEQU )]
+        [InlineData( "*", ETokenTypes.ETT_OP_MUL )]
+        [InlineData( "*=", ETokenTypes.ETT_OP_MEQU )]
+        [InlineData( "/", ETokenTypes.ETT_OP_DIV )]
+        [InlineData( "/=", ETokenTypes.ETT_OP_DEQU )]
+        [InlineData( "%", ETokenTypes.ETT_OP_MOD )]
+        [InlineData( "%=", ETokenTypes.ETT_OP_MDEQU )]
+        [InlineData( "!", ETokenTypes.ETT_OP_NOT )]
+        [InlineData( "==", ETokenTypes.ETT_OP_EQU )]
+        [InlineData( "!=", ETokenTypes.ETT_OP_NEQU )]
+        [InlineData( "<", ETokenTypes.ETT_OP_INF )]
+        [InlineData( "<=", ETokenTypes.ETT_OP_IEQU )]
+        [InlineData( ">", ETokenTypes.ETT_OP_SUP )]
+        [InlineData( ">=", ETokenTypes.ETT_OP_SEQU )]
+        [InlineData( "++", ETokenTypes.ETT_OP_INC )]
+        [InlineData( "--", ETokenTypes.ETT_OP_DEC )]
+        [InlineData( ":", ETokenTypes.ETT_OP_ASIGN_TYPE )]
+        [InlineData( ".", ETokenTypes.ETT_OP_MEMBER )]
+        [InlineData( "::", ETokenTypes.ETT_OP_NAME_MEMBER )]
+        [InlineData( "&", ETokenTypes.ETT_OP_UADD )]
+        [InlineData( "|", ETokenTypes.ETT_OP_UXOR )]
+        [InlineData( "^", ETokenTypes.ETT_OP_UOR )]
+        [InlineData( "~", ETokenTypes.ETT_OP_UCOMP )]
+        [InlineData( "bool", ETokenTypes.ETT_TYPE_BOOL )]
+        [InlineData( "byte", ETokenTypes.ETT_TYPE_INT8 )]
+        [InlineData( "short", ETokenTypes.ETT_TYPE_INT16 )]
+        [InlineData( "int", ETokenTypes.ETT_TYPE_INT32 )]
+        [InlineData( "long", ETokenTypes.ETT_TYPE_INT64 )]
+        [InlineData( "float", ETokenTypes.ETT_TYPE_FLOAT32 )]
+        [InlineData( "double", ETokenTypes.ETT_TYPE_FLOAT64 )]
+        [InlineData( "(", ETokenTypes.ETT_SEP_OPEN_PARANTHESIS )]
+        [InlineData( "[", ETokenTypes.ETT_SEP_OPEN_BRACKETS )]
+        [InlineData( "{", ETokenTypes.ETT_SEP_OPEN_HUG )]
+        [InlineData( "}", ETokenTypes.ETT_SEP_CLOSE_HUG )]
+        [InlineData( "]", ETokenTypes.ETT_SEP_CLOSE_BRACKETS )]
+        [InlineData( ")", ETokenTypes.ETT_SEP_CLOSE_PARANTHESIS )]
+        [InlineData( ",", ETokenTypes.ETT_SEP_COMA )]
+        [InlineData( ";", ETokenTypes.ETT_SEP_SEMICOLON )]
+        public void Lexer_ParseSimple( string text, ETokenTypes target ) {
+            var tokens = this.Parse( text );
+
+            Assert.Equal( 2 , tokens.Length );
+            Assert.Equal( target, tokens[ 0 ].Type );
+            Assert.Equal( text, tokens[ 0 ].Meta.Value );
+        }
+
+        /// <summary>
+        /// Lexer_ParseMultiple method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Defined test for multiple token generation</note>
+        [Theory]
+        [InlineData( "var test = 10;", new []{ ETokenTypes.ETT_KEYWORD, ETokenTypes.ETT_IDENTIFIER, ETokenTypes.ETT_OP_ASIGN, ETokenTypes.ETT_LITERAL, ETokenTypes.ETT_SEP_SEMICOLON } )]
+        public void Lexer_ParseMultiple( string text, ETokenTypes[] targets ) {
+            var tokens = this.Parse( text );
+
+            Assert.Equal( tokens.Count( ) - 1, targets.Count( ) );
+
+            for ( var idx = 0; idx < targets.Count( ); idx++ )
+                Assert.Equal( targets[ idx ], tokens[ idx ].Type );
+        }
 
     }
 

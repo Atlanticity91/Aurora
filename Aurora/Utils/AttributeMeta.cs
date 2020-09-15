@@ -24,41 +24,40 @@
  * 
  **/
 
-using Aurora.Analysis;
-using Aurora.Repler;
-using Aurora.Runtime;
+using System;
+using System.Reflection;
 
-namespace Aurora {
+namespace Aurora.Utils {
 
     /// <summary>
-    /// Program sealed class
+    /// AttributeMeta generic class
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined attribute metadata core code</note>
+    /// <typeparam name="A" >Type of attribute store on the meta</typeparam>
+    public class AttributeMeta<A> where A : Attribute {
+
+        protected readonly A Attribute;
+        public readonly MethodInfo Action;
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-            var compiler = new Compiler( );
-            var evaluator = new Evaluator( );
+        public AttributeMeta( ) {
+            this.Attribute = null;
+            this.Action = null;
+        }
 
-            var result = compiler.Compile( "2 * 5 + ( 10 * 5 )" );
-
-            // Display all compilation error
-            console.Display( compiler );
-
-            // Display current compilation token list
-            console.Display( compiler.Tokens );
-
-            // Display current compilation syntax node list
-            console.Display( compiler.Nodes );
-
-            console.Display( $"Evaluation result : {evaluator.Evaluate(compiler.Nodes)}" );
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <param name="attribute" >Current attribute</param>
+        /// <param name="action" >Current action</param>
+        public AttributeMeta( A attribute, MethodInfo action ) {
+            this.Attribute = attribute;
+            this.Action = action;
         }
 
     }

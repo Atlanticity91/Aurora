@@ -130,7 +130,7 @@ namespace Aurora.Repler {
                 if ( !node.Token.IsEOF ) {
                     var maker = ( last ) ? "└─" : "├─";
 
-                    this.Display( this.Style.Text, $"{indent}{maker} [ {node.Type} ] " ); // [ {node.Type} ]
+                    this.Display( this.Style.Text, $"{indent}{maker} [ {node.Type} ] " );
 
                     var tokens = node.Tokens;
                     if ( tokens != null ) {

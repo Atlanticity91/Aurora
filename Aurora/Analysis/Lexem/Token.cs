@@ -111,6 +111,7 @@ namespace Aurora.Analysis.Lexem {
         public bool IsType => this.interal_IsType( );
         public bool IsLiteral => this.interal_IsLiteral( );
         public bool IsUnsigned => this.IsType && this.Meta.Value.StartsWith( 'u' );
+        public bool IsIdentifier => this.Type == ETokenTypes.ETT_IDENTIFIER;
         public bool IsKeyword => this.Type == ETokenTypes.ETT_KEYWORD || this.IsType;
 
         public bool IsTermOperator => this.Type == ETokenTypes.ETT_OP_ADD || this.Type == ETokenTypes.ETT_OP_SUB;

@@ -75,7 +75,7 @@ namespace Aurora.Analysis.Syntax {
             if ( this.current < tokens.Count( ) )
                 return tokens.ElementAt( this.current );
 
-            return tokens.ElementAt( this.current - 1 );
+            return tokens.ElementAt( tokens.Count( ) - 1 );
         }
 
         /// <summary>
@@ -101,10 +101,10 @@ namespace Aurora.Analysis.Syntax {
         /// <param name="query" >Query token type</param>
         /// <returns>Token</returns>
         protected Token Match( IEnumerable<Token> tokens, ETokenTypes query ) {
-            var current =this.Current( tokens );
+            var current = this.Current( tokens );
 
             if ( current.Type != query )
-                this.EmitErrr( $"Unexpected token {current.Type}, expected {query}", current.Meta );
+                this.EmitErrr( $"Unexpected token <{current.Type}>, expected <{query}>", current.Meta );
 
             return this.Next( tokens );
         }
@@ -121,7 +121,7 @@ namespace Aurora.Analysis.Syntax {
 
             if ( token.IsLiteral )
                 return new SyntaxNode( ENodeTypes.ENT_LITERAL, token );
-            else if ( token.Type == ETokenTypes.ETT_IDENTIFIER )
+            else if ( token.IsIdentifier )
                 return new SyntaxNode( ENodeTypes.ENT_IDENTIFIER, token );
             else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS ) {
                 var expression = this.ParseSyntax( tokens, 0 );
@@ -129,7 +129,7 @@ namespace Aurora.Analysis.Syntax {
 
                 return new ParanthesisExpressionNode( token, close, expression );
             }
-            
+
             this.EmitErrr( $"Unexpected token type {token.Type}.", token.Meta );
 
             return new SyntaxNode( token );
