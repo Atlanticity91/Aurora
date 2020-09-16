@@ -41,6 +41,7 @@ namespace Aurora.Repler {
 
         private IEnumerable<ReplControlMeta> controls;
         private IEnumerable<ReplCommandMeta> commands;
+        private LocationMeta cursor;
 
         /// <summary>
         /// Constructor
@@ -53,6 +54,7 @@ namespace Aurora.Repler {
 
             this.controls = new List<ReplControlMeta>( );
             this.commands = new List<ReplCommandMeta>( );
+            this.cursor = new LocationMeta( 0, 0 );
 
             this.Initialize( );
         }

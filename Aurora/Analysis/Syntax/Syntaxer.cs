@@ -123,14 +123,17 @@ namespace Aurora.Analysis.Syntax {
                 return new SyntaxNode( ENodeTypes.ENT_LITERAL, token );
             else if ( token.IsIdentifier )
                 return new SyntaxNode( ENodeTypes.ENT_IDENTIFIER, token );
-            else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS ) {
+            else if ( token.IsUnaryOperator ) {
+                var operand = this.ParseSyntax( tokens, 0 );
+                
+                return new UnaryExpressionNode( token, operand );
+            } else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS ) {
                 var expression = this.ParseSyntax( tokens, 0 );
                 var close = this.Match( tokens, ETokenTypes.ETT_SEP_CLOSE_PARANTHESIS );
 
                 return new ParanthesisExpressionNode( token, close, expression );
-            }
-
-            this.EmitErrr( $"Unexpected token type {token.Type}.", token.Meta );
+            } else 
+                this.EmitErrr( $"Unexpected token type {token.Type}.", token.Meta );
 
             return new SyntaxNode( token );
         }
@@ -148,12 +151,12 @@ namespace Aurora.Analysis.Syntax {
 
             while ( this.Current( tokens ).IsOperator ) {
                 var _operator = this.Next( tokens );
-                var _precedence = _operator.Precedence( );
+                /*var _precedence = _operator.Precedence( );
 
                 if ( _precedence == 0 || _precedence <= precedence )
-                    break;
+                    break;*/
 
-                var right = this.ParseSyntax( tokens, _precedence );
+                var right = this.ParseSyntax( tokens, 0 );
 
                 root = new BinaryExpressionNode( _operator, root, right );
             }

@@ -33,10 +33,12 @@ namespace Aurora.Utils {
     /// <note>Define text metadata</note>
     public sealed class Textmeta {
 
-        public int Line { get; }
-        public int Position { get; }
+        private LocationMeta location;
+
         public string Value { get; }
 
+        public int Line => this.location.Line;
+        public int Position => this.location.Position;
         public int Size => this.Value.Length;
 
         /// <summary>
@@ -46,9 +48,8 @@ namespace Aurora.Utils {
         /// <param name="line" >Line of the source text that contain data</param>
         /// <param name="position" >Offset from line start</param>
         /// <param name="value" >Text store on the metadata</param>
-        public Textmeta( int line, int Position, string value ) {
-            this.Line = line;
-            this.Position = Position;
+        public Textmeta( int line, int position, string value ) {
+            this.location = new LocationMeta( line, position );
             this.Value = value;
         }
 

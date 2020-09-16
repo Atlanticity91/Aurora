@@ -177,6 +177,8 @@ namespace Aurora.Analysis.Lexem {
             var start = 0;
             var old = chars[ char_id ].GetCharType( );
 
+            // TODO : Extend char GetCharType
+
             while ( char_id < chars.Length ) {
                 do 
                     old = chars[ char_id++ ].GetCharType( );

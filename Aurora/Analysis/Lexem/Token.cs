@@ -107,15 +107,13 @@ namespace Aurora.Analysis.Lexem {
         public bool HasMeta => this.Meta != null;
         public bool IsEOF => this.Type == ETokenTypes.ETT_EOF;
         public bool IsOperator => this.interal_IsOperator( );
+        public bool IsUnaryOperator => this.interal_IsUnaryOperator( );
         public bool IsSeparator => this.interal_IsSeparator( );
         public bool IsType => this.interal_IsType( );
         public bool IsLiteral => this.interal_IsLiteral( );
         public bool IsUnsigned => this.IsType && this.Meta.Value.StartsWith( 'u' );
         public bool IsIdentifier => this.Type == ETokenTypes.ETT_IDENTIFIER;
         public bool IsKeyword => this.Type == ETokenTypes.ETT_KEYWORD || this.IsType;
-
-        public bool IsTermOperator => this.Type == ETokenTypes.ETT_OP_ADD || this.Type == ETokenTypes.ETT_OP_SUB;
-        public bool IsFactorOperator => this.Type == ETokenTypes.ETT_OP_MUL || this.Type == ETokenTypes.ETT_OP_DIV || this.Type == ETokenTypes.ETT_OP_MOD;
 
         /// <summary>
         /// Constructor
@@ -170,6 +168,16 @@ namespace Aurora.Analysis.Lexem {
                     this.Type == ETokenTypes.ETT_OP_ASIGN_TYPE ||
                     this.Type == ETokenTypes.ETT_OP_MEMBER ||
                     this.Type == ETokenTypes.ETT_OP_NAME_MEMBER ||
+                    this.Type == ETokenTypes.ETT_OP_UADD ||
+                    this.Type == ETokenTypes.ETT_OP_UXOR ||
+                    this.Type == ETokenTypes.ETT_OP_UOR ||
+                    this.Type == ETokenTypes.ETT_OP_UCOMP;
+        }
+
+        internal bool interal_IsUnaryOperator( ) {
+            return  this.Type == ETokenTypes.ETT_OP_MUL ||
+                    this.Type == ETokenTypes.ETT_OP_DIV ||
+                    this.Type == ETokenTypes.ETT_OP_MOD ||
                     this.Type == ETokenTypes.ETT_OP_UADD ||
                     this.Type == ETokenTypes.ETT_OP_UXOR ||
                     this.Type == ETokenTypes.ETT_OP_UOR ||
