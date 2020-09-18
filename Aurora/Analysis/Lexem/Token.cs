@@ -106,6 +106,7 @@ namespace Aurora.Analysis.Lexem {
 
         public bool HasMeta => this.Meta != null;
         public bool IsEOF => this.Type == ETokenTypes.ETT_EOF;
+        public bool IsSemicolon => this.Type == ETokenTypes.ETT_SEP_SEMICOLON;
         public bool IsOperator => this.interal_IsOperator( );
         public bool IsUnaryOperator => this.interal_IsUnaryOperator( );
         public bool IsSeparator => this.interal_IsSeparator( );

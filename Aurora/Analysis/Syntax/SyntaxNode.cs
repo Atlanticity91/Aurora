@@ -37,6 +37,7 @@ namespace Aurora.Analysis.Syntax {
     public enum ENodeTypes {
 
         ENT_EOF,
+        ENT_UNKNOW,
         ENT_IDENTIFIER,
         ENT_LITERAL,
         ENT_EXPRESSION,
@@ -61,16 +62,6 @@ namespace Aurora.Analysis.Syntax {
 
         public virtual IEnumerable<SyntaxNode> Childs {
             get { return Enumerable.Empty<SyntaxNode>( ); }
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <param name="token" >Token that generate the node</param>
-        public SyntaxNode( Token token ) {
-            this.Type = ( token.Type == ETokenTypes.ETT_SEP_SEMICOLON ) ? ENodeTypes.ENT_SEMICOLON : ENodeTypes.ENT_EOF;
-            this.Token = token;
         }
 
         /// <summary>

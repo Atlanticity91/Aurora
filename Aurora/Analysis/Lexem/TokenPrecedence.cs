@@ -57,6 +57,28 @@ namespace Aurora.Analysis.Lexem {
             return 0;
         }
 
+        /// <summary>
+        /// UnaryPrecedence static extension function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Get current token unary precedence value</note>
+        /// <param name="token" >Current token</param>
+        /// <returns>int</returns>
+        public static int UnaryPrecedence( this Token token ) {
+            if ( token != null ) {
+                switch ( token.Type ) {
+                    case ETokenTypes.ETT_OP_ADD :
+                    case ETokenTypes.ETT_OP_SUB :
+                    case ETokenTypes.ETT_OP_UCOMP :
+                        return 3;
+
+                    default: break;
+                }
+            }
+
+            return 0;
+        }
+
     }
 
 }

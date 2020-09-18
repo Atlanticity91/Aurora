@@ -47,7 +47,8 @@ namespace Aurora {
             var compiler = new Compiler( );
             var evaluator = new Evaluator( );
 
-            var result = compiler.Compile( "-( 2 * 5 + ( 10 * 5 ) )" );
+            var result = compiler.Compile( "-10 + 6 * 2 + 1" );
+            var evaluations = evaluator.Evaluate( compiler.Nodes );
 
             // Display all compilation error
             console.Display( compiler );
@@ -58,7 +59,8 @@ namespace Aurora {
             // Display current compilation syntax node list
             console.Display( compiler.Nodes );
 
-            console.Display( $"Evaluation result : {evaluator.Evaluate(compiler.Nodes)}" );
+            // Display expression evaluation
+            console.Display( evaluations );
         }
 
     }

@@ -28,6 +28,7 @@ using Aurora.Analysis.Lexem;
 using Aurora.Analysis.Syntax;
 using Aurora.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aurora.Runtime {
 
@@ -62,20 +63,20 @@ namespace Aurora.Runtime {
                     var expression = (BinaryExpressionNode)node;
 
                     switch ( node.Token.Type ) {
-                        case ETokenTypes.ETT_OP_ADD: return this.Evaluation( expression.Left ) + this.Evaluation( expression.Right );
-                        case ETokenTypes.ETT_OP_SUB: return this.Evaluation( expression.Left ) - this.Evaluation( expression.Right );
-                        case ETokenTypes.ETT_OP_MUL: return this.Evaluation( expression.Left ) * this.Evaluation( expression.Right );
-                        case ETokenTypes.ETT_OP_DIV: return this.Evaluation( expression.Left ) / this.Evaluation( expression.Right );
-                        case ETokenTypes.ETT_OP_MOD: return this.Evaluation( expression.Left ) % this.Evaluation( expression.Right );
-                        default: break;
+                        case ETokenTypes.ETT_OP_ADD : return this.Evaluation( expression.Left ) + this.Evaluation( expression.Right );
+                        case ETokenTypes.ETT_OP_SUB : return this.Evaluation( expression.Left ) - this.Evaluation( expression.Right );
+                        case ETokenTypes.ETT_OP_MUL : return this.Evaluation( expression.Left ) * this.Evaluation( expression.Right );
+                        case ETokenTypes.ETT_OP_DIV : return this.Evaluation( expression.Left ) / this.Evaluation( expression.Right );
+                        case ETokenTypes.ETT_OP_MOD : return this.Evaluation( expression.Left ) % this.Evaluation( expression.Right );
+                        default : break;
                     }
                 } else if ( node is UnaryExpressionNode ) {
                     var expression = (UnaryExpressionNode)node;
 
                     switch ( node.Token.Type ) {
-                        case ETokenTypes.ETT_OP_ADD: return this.Evaluation( expression.Operand );
-                        case ETokenTypes.ETT_OP_SUB: return -( this.Evaluation( expression.Operand ) );
-                        default: break;
+                        case ETokenTypes.ETT_OP_ADD : return this.Evaluation( expression.Operand );
+                        case ETokenTypes.ETT_OP_SUB : return -( this.Evaluation( expression.Operand ) );
+                        default : break;
                     }
                 } else if ( node is ParanthesisExpressionNode )
                     return this.Evaluation( ((ParanthesisExpressionNode)node).Expression );
@@ -90,16 +91,16 @@ namespace Aurora.Runtime {
         /// <author>ALVES Quentin</author>
         /// <note>Evaluate a sample of nodes aka trees</note>
         /// <param name="nodes" >Current node trees to evaluate</param>
-        /// <returns>int</returns>
-        public int Evaluate( IEnumerable<SyntaxNode> nodes ) {
-            foreach ( var node in nodes ) {
-                if ( node.Type == ENodeTypes.ENT_EXPRESSION )
-                    return this.Evaluation( node );
-                else
-                    this.EmitErrr( $"Node <{node.Type}> can't be evaluate, there is no expression.", null );
+        /// <returns>IEnumerable<int></returns>
+        public IEnumerable<int> Evaluate( IEnumerable<SyntaxNode> nodes ) {
+            if ( nodes != null ) {
+                foreach ( var node in nodes ) {
+                    if ( node.Type == ENodeTypes.ENT_EXPRESSION || node.Type == ENodeTypes.ENT_LITERAL )
+                        yield return this.Evaluation( node );
+                    else
+                        this.EmitErrr( $"Node <{node.Type}> can't be evaluate, there is no expression.", null );
+                }
             }
-
-            return 0;
         }
 
     }

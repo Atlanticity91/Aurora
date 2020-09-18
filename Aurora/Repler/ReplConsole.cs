@@ -224,6 +224,27 @@ namespace Aurora.Repler {
             }
         }
 
+        /// <summary>
+        /// Display method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Display output of evaluation phase on console</note>
+        /// <param name="evaluations" >List of int generate by expression evaluation</param>
+        public void Display( IEnumerable<int> evaluations ) {
+            if ( evaluations != null ) {
+                this.Display( "Evaluation result :\n" );
+
+                foreach ( var eval in evaluations ) {
+                    if ( eval > -1 )
+                        this.Display( this.Style.Literal, $"  {eval}\n" );
+                    else {
+                        this.Display( this.Style.Operator, "  -" );
+                        this.Display( this.Style.Literal, $"{-eval}\n" );
+                    }
+                }
+            }
+        }
+
     }
 
 }
