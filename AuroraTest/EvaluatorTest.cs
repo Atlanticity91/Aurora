@@ -25,42 +25,54 @@
  **/
 
 using Aurora.Analysis;
-using Aurora.Repler;
 using Aurora.Runtime;
+using System.Collections.Generic;
+using System.Linq;
+using Xunit;
 
-namespace Aurora {
+namespace AuroraTest {
 
     /// <summary>
-    /// Program sealed class
+    /// LexerTest class
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined Aurora lexer core test</note>
+    public class EvaluatorTest {
 
         /// <summary>
-        /// Main static method
+        /// Compute internal function
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
+        /// <note>Compile and evaluate an expression based on source text</note>
+        /// <param name="text" ></param>
+        /// <returns>IEnumerable<int></returns>
+        internal IEnumerable<int> Compute( string text ) {
             var compiler = new Compiler( );
             var evaluator = new Evaluator( );
 
-            var result = compiler.Compile( "1 * ( 2 + 4 )" );
-            var evaluations = evaluator.Evaluate( compiler.Nodes );
+            compiler.Compile( text );
 
-            // Display all compilation error
-            console.Display( compiler );
+            return evaluator.Evaluate( compiler.Nodes );
+        }
 
-            // Display current compilation token list
-            console.Display( compiler.Tokens );
+        /// <summary>
+        /// Evaluator_Expression method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Defined test for expression result evaluation</note>
+        [Theory]
+        [InlineData( "10", 10 )]
+        [InlineData( "-10", -10 )]
+        [InlineData( "1 * 2", 2 )]
+        [InlineData( "-1 * 2", -2 )]
+        [InlineData( "1 * 2 + 4", 6 )]
+        [InlineData( "1 * ( 2 + 4 )", 6 )]
+        [InlineData( "2 * ( 2 + 4 )", 12 )]
+        public void Evaluator_Expression( string text, int result ) {
+            var evaluation = this.Compute( text );
 
-            // Display current compilation syntax node list
-            console.Display( compiler.Nodes );
-
-            // Display expression evaluation
-            console.Display( evaluations );
+            Assert.Single( evaluation );
+            Assert.Equal( result, evaluation.Single( ) );
         }
 
     }
