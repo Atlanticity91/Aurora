@@ -26,59 +26,34 @@
 
 using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// ENodeTypes enum
+    /// ParameterDeclarationNode class [ DeclarationNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora syntax node types enum</note>
-    public enum ENodeTypes {
+    /// <note>Defined Aurora function paramter declaration core class</note>
+    public class ParameterDeclarationNode : DeclarationNode {
 
-        ENT_EOF,
-        ENT_UNKNOW,
-        ENT_IDENTIFIER,
-        ENT_TYPE,
-        ENT_LITERAL,
-        ENT_EXPRESSION,
-        ENT_SEMICOLON,
-        ENT_DECLARATION,
-        ENT_STATEMENT,
-        ENT_HUGS,
-    }
+        public SyntaxNode VariableType { get; }
 
-    /// <summary>
-    /// SyntaxNode class 
-    /// </summary>
-    /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora syntax node core class</note>
-    public class SyntaxNode {
-
-        public ENodeTypes Type { get; }
-        public Token Token { get; }
-
-        public ETokenTypes TokenType => this.Token.Type;
-        public string TokenText => this.Token.Text;
-
-        public virtual IEnumerable<Token> Tokens {
-            get { yield return this.Token; }
-        }
-
-        public virtual IEnumerable<SyntaxNode> Childs {
-            get { return Enumerable.Empty<SyntaxNode>( ); }
+        public override IEnumerable<SyntaxNode> Childs {
+            get {
+                yield return this.VariableType;
+            }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="type" >Type of the new syntax node</param>
-        /// <param name="token" >Token that generate the node</param>
-        public SyntaxNode( ENodeTypes type, Token token ) {
-            this.Type = type;
-            this.Token = token;
+        /// <param name="name" >Current parameter declaration name</param>
+        /// <param name="type" >Current parameter declaration type</param>
+        public ParameterDeclarationNode( Token name, SyntaxNode type )
+            : base( name ) 
+        {
+            this.VariableType = type;
         }
 
     }

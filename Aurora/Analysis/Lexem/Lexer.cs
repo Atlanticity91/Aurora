@@ -75,6 +75,7 @@ namespace Aurora.Analysis.Lexem {
         /// <note>Initialize current lexer</note>
         protected virtual void Initialize( ) {
             this.Register( "var", ETokenTypes.ETT_KEYWORD );
+            this.Register( "define", ETokenTypes.ETT_KEYWORD );
             this.Register( "if", ETokenTypes.ETT_KEYWORD );
             this.Register( "else", ETokenTypes.ETT_KEYWORD );
             this.Register( "for", ETokenTypes.ETT_KEYWORD );
@@ -87,6 +88,8 @@ namespace Aurora.Analysis.Lexem {
             this.Register( "function", ETokenTypes.ETT_KEYWORD );
             this.Register( "return", ETokenTypes.ETT_KEYWORD );
             this.Register( "break", ETokenTypes.ETT_KEYWORD );
+            this.Register( "import", ETokenTypes.ETT_KEYWORD );
+            this.Register( "as", ETokenTypes.ETT_KEYWORD );
 
             this.Register( "=", ETokenTypes.ETT_OP_ASIGN );
             this.Register( "+", ETokenTypes.ETT_OP_ADD );

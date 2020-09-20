@@ -25,7 +25,7 @@
  **/
 
 using Aurora.Analysis.Assembly;
-using Aurora.Analysis.Chekcer;
+using Aurora.Analysis.Checker;
 using Aurora.Analysis.Lexem;
 using Aurora.Analysis.Syntax;
 using Aurora.Diagnostics;

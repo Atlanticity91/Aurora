@@ -26,59 +26,46 @@
 
 using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// ENodeTypes enum
+    /// ImportDeclarationNode class [ DeclarationNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora syntax node types enum</note>
-    public enum ENodeTypes {
+    /// <note>Defined Aurora import expression declaration core class</note>
+    public class ImportDeclarationNode : DeclarationNode {
 
-        ENT_EOF,
-        ENT_UNKNOW,
-        ENT_IDENTIFIER,
-        ENT_TYPE,
-        ENT_LITERAL,
-        ENT_EXPRESSION,
-        ENT_SEMICOLON,
-        ENT_DECLARATION,
-        ENT_STATEMENT,
-        ENT_HUGS,
-    }
+        public Token Path { get; }
+        public Token Name { get; }
+        public Token End { get; }
 
-    /// <summary>
-    /// SyntaxNode class 
-    /// </summary>
-    /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora syntax node core class</note>
-    public class SyntaxNode {
+        public override IEnumerable<Token> Tokens {
+            get {
+                yield return this.Token;
+                yield return this.Path;
 
-        public ENodeTypes Type { get; }
-        public Token Token { get; }
+                if ( this.Name != null )
+                    yield return this.Name;
 
-        public ETokenTypes TokenType => this.Token.Type;
-        public string TokenText => this.Token.Text;
-
-        public virtual IEnumerable<Token> Tokens {
-            get { yield return this.Token; }
-        }
-
-        public virtual IEnumerable<SyntaxNode> Childs {
-            get { return Enumerable.Empty<SyntaxNode>( ); }
+                yield return this.End;
+            }
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="type" >Type of the new syntax node</param>
-        /// <param name="token" >Token that generate the node</param>
-        public SyntaxNode( ENodeTypes type, Token token ) {
-            this.Type = type;
-            this.Token = token;
+        /// <param name="keyword" >Current import declaration keyword</param>
+        /// <param name="path" >Current import declaration path</param>
+        /// <param name="name" >Current import declaration name</param>
+        /// <param name="end" >Current import declaration end</param>
+        public ImportDeclarationNode( Token keyword, Token path, Token name, Token end ) 
+            : base( keyword ) 
+        {
+            this.Path = path;
+            this.Name = name;
+            this.End = end;
         }
 
     }

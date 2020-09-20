@@ -28,7 +28,7 @@ using Aurora.Analysis.Syntax;
 using Aurora.Diagnostics;
 using System.Collections.Generic;
 
-namespace Aurora.Analysis.Chekcer {
+namespace Aurora.Analysis.Checker {
 
     /// <summary>
     /// Analyser class [ Diagnosable ]

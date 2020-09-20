@@ -24,6 +24,7 @@
  * 
  **/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -73,6 +74,22 @@ namespace Aurora.Utils {
             return false;
         }
 
+        /// <summary>
+        /// ToDecimal static extension function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Convert string from hex or binary to int</note>
+        /// <param name="query" >Current string</param>
+        /// <returns>int</returns>
+        public static int ToDecimal( this string query ) {
+            if ( query.StartsWith( '#' ) )
+                return Convert.ToInt32( query.Substring( 1 ), 16 );
+            else if ( query.StartsWith( '@' ) )
+                return Convert.ToInt32( query.Substring( 1 ), 2 );
+
+            return 0;
+        }   
+        
     }
 
 }

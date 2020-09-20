@@ -28,7 +28,6 @@ using Aurora.Analysis.Lexem;
 using Aurora.Analysis.Syntax;
 using Aurora.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Aurora.Runtime {
 

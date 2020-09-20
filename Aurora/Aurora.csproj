@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Analysis\Chekcer\Symbols\" />
-    <Folder Include="Analysis\Chekcer\Types\" />
+    <Folder Include="Analysis\Checker\Symbols\" />
+    <Folder Include="Analysis\Checker\Types\" />
   </ItemGroup>
 
 </Project>
