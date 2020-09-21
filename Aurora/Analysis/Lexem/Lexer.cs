@@ -138,6 +138,7 @@ namespace Aurora.Analysis.Lexem {
             this.Register( "imat2", ETokenTypes.ETT_TYPE_IMATRIX2 );
             this.Register( "imat3", ETokenTypes.ETT_TYPE_IMATRIX3 );
             this.Register( "imat4", ETokenTypes.ETT_TYPE_IMATRIX4 );
+            this.Register( "string", ETokenTypes.ETT_TYPE_STRING );
 
             this.Register( "(", ETokenTypes.ETT_SEP_OPEN_PARANTHESIS );
             this.Register( "[", ETokenTypes.ETT_SEP_OPEN_BRACKETS );
@@ -229,7 +230,8 @@ namespace Aurora.Analysis.Lexem {
                 var line_id = 0;
 
                 foreach ( var line in lines ) {
-                    this.Merge( this.Parse( line, ref line_id ) );
+                    if ( !string.IsNullOrEmpty( line ) ) 
+                        this.Merge( this.Parse( line, ref line_id ) );
 
                     line_id += 1;
                 }

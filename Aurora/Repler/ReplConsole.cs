@@ -32,6 +32,7 @@ using Aurora.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 
 namespace Aurora.Repler {
 
@@ -138,20 +139,24 @@ namespace Aurora.Repler {
                         var color = (Color)null;
 
                         foreach ( var token in tokens ) {
-                            if ( token.IsSeparator )
-                                color = this.Style.Separator;
-                            else if ( token.IsOperator )
-                                color = this.Style.Operator;
-                            else if ( token.IsLiteral )
-                                color = this.Style.Literal;
-                            else if ( token.IsKeyword )
-                                color = this.Style.Keyword;
-                            else if ( token.IsType )
-                                color = this.Style.Type;
-                            else
-                                color = this.Style.Text;
+                            if ( token != null ) {
+                                if ( token.IsSeparator )
+                                    color = this.Style.Separator;
+                                else if ( token.IsOperator )
+                                    color = this.Style.Operator;
+                                else if ( token.IsLiteral )
+                                    color = this.Style.Literal;
+                                else if ( token.IsKeyword )
+                                    color = this.Style.Keyword;
+                                else if ( token.IsType )
+                                    color = this.Style.Type;
+                                else if ( token.IsString )
+                                    color = this.Style.String;
+                                else
+                                    color = this.Style.Text;
 
-                            this.Display( color, $"{token.Meta.Value} " );
+                                this.Display( color, $"{token.Meta.Value} " );
+                            }
                         }
 
                         Console.Write( "\n" );

@@ -117,8 +117,11 @@ namespace Aurora.Analysis {
         private object Process( ) {
             this.Merge( this.Lexer.Parse( this.loader ) );
             this.Merge( this.Syntaxer.Parse( this.Tokens ) );
-            this.Merge( this.Analyser.Parse( this.Nodes ) );
-            this.Merge( this.Assembler.Parse( this.Nodes ) );
+
+            if ( !this.HasError ) {
+                this.Merge( this.Analyser.Parse( this.Nodes ) );
+                this.Merge( this.Assembler.Parse( this.Nodes ) );
+            }
 
             return this.Assembler.Script;
         }

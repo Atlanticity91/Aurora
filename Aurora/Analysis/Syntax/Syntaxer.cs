@@ -32,6 +32,11 @@ using System.Linq;
 
 namespace Aurora.Analysis.Syntax {
 
+    // TODO : Add Boolean support
+    // TODO : Add Condition expression support
+    // TODO : Add String support
+    // TODO : Add Ternary support
+
     /// <summary>
     /// Syntaxer class [ Diagnosable ]
     /// </summary>
@@ -170,7 +175,7 @@ namespace Aurora.Analysis.Syntax {
             else
                 expression = this.ParseToken( );
 
-            while ( !this.Current.IsSemicolon ) {
+            while ( true ) {
                 var _precedence = this.Current.Precedence( );
 
                 if ( _precedence == 0 || _precedence <= precedence )
@@ -181,8 +186,6 @@ namespace Aurora.Analysis.Syntax {
 
                 expression = new BinaryExpressionNode( op, expression, right );
             }
-
-            this.Next( );
 
             return expression;
         }
@@ -237,9 +240,10 @@ namespace Aurora.Analysis.Syntax {
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Parse node_id token to syntax node</note>
+        /// <param name="query" >Defined if the query parse token must be a specific type</param>
         /// <returns>SyntaxNode</returns>
-        protected virtual SyntaxNode ParseToken( ) {
-            var token = this.Next( );
+        protected virtual SyntaxNode ParseToken( ETokenTypes? query = null ) {
+            var token = ( query == null ) ? this.Next( ) : this.Match( (ETokenTypes)query );
 
             if ( token.IsEOF )
                 return new SyntaxNode( ENodeTypes.ENT_EOF, token );
@@ -255,6 +259,8 @@ namespace Aurora.Analysis.Syntax {
                 return new SyntaxNode( ENodeTypes.ENT_BOOLEAN, token );
             else if ( token.IsControlFlow )
                 return new SyntaxNode( ENodeTypes.ENT_CONTROL_FLOW, token );
+            else if ( token.IsString )
+                return new SyntaxNode( ENodeTypes.ENT_STRING, token );
             else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS )
                 return this.ParseParanthesisExpression( token );
 
@@ -292,6 +298,10 @@ namespace Aurora.Analysis.Syntax {
 
             if ( this.Current.Type == ETokenTypes.ETT_OP_ASIGN_TYPE ) {
                 this.Next( );
+
+                if ( !this.Current.IsType )
+                    this.EmitErrr( $"Unexpected token type <{this.Current.Type}> expected <TYPE> token.", this.Current.Meta );
+
                 type = this.ParseToken( );
             }
 
@@ -306,20 +316,35 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseVariableDeclaration( ) {
             var keyword = this.Next( );
-            var end = (Token)null;
+            var name = (SyntaxNode)null;
+            var expression = (SyntaxNode)null;
+            var type = (SyntaxNode)null;
 
-            if ( this.Peek( 2 ).Type == ETokenTypes.ETT_OP_ASIGN_TYPE ) {
-                var name = this.Match( ETokenTypes.ETT_IDENTIFIER );
-                var type = this.ParseType( );
-                end = this.Match( ETokenTypes.ETT_SEP_SEMICOLON );
+            if ( this.Peek( 1 ).Type == ETokenTypes.ETT_OP_ASIGN )
+                expression = this.ParseExpression( );
+            else if ( this.Peek( 1 ).Type == ETokenTypes.ETT_OP_ASIGN_TYPE ) {
+                name = this.ParseToken( );
+                type = this.ParseType( );
+            } else if ( this.Peek( 1 ).IsSemicolon )
+                name = this.ParseToken( );
 
-                return new VariableDeclarationNode( keyword, name, type, end );
-            }
+            var end = this.Match( ETokenTypes.ETT_SEP_SEMICOLON );
 
+            return new VariableDeclarationNode( keyword, name, expression, type, end );
+        }
+
+        /// <summary>
+        /// ParseDefineDeclaration virtual function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Parse define declaration</note>
+        /// <returns>SyntaxNode</returns>
+        protected virtual SyntaxNode ParseDefineDeclaration( ) {
+            var keyword = this.Next( );
             var expression = this.ParseExpression( );
-            end = this.Match( ETokenTypes.ETT_SEP_SEMICOLON );
+            var end = this.Match( ETokenTypes.ETT_SEP_SEMICOLON );
 
-            return new VariableDeclarationNode( keyword, expression, end );
+            return new DefineDeclarationNode( keyword, expression, end );
         }
 
         /// <summary>
@@ -335,8 +360,9 @@ namespace Aurora.Analysis.Syntax {
             while ( this.Current.Type != ETokenTypes.ETT_SEP_CLOSE_PARANTHESIS ) {
                 var name = this.Next( );
                 var type = this.ParseType( );
+                var parameter = new ParameterDeclarationNode( name, type );
 
-                parameters.Add( new ParameterDeclarationNode( name, type ) );
+                parameters.Add( parameter );
 
                 if ( this.Current.Type == ETokenTypes.ETT_SEP_COMA )
                     this.Next( );
@@ -408,19 +434,17 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseElseStatement( ) {
             var keyword = this.Next( );
-            var end = (Token)null;
+            var sub_if = (SyntaxNode)null;
+            var body = (IEnumerable<SyntaxNode>)null;
 
-            if ( this.Current.Type == ETokenTypes.ETT_KEYWORD_IF ) {
-                var sub_if = this.ParseIfStatement( );
-                end =this.Match( ETokenTypes.ETT_KEYWORD_END );
+            if ( this.Current.Type == ETokenTypes.ETT_KEYWORD_IF )
+                sub_if = this.ParseIfStatement( );
+            else
+                body = this.ParseBody( );
 
-                return new ElseStatementNode( keyword, sub_if, end );
-            }
+            var end = this.Match( ETokenTypes.ETT_KEYWORD_END );
 
-            var body = this.ParseBody( );
-            end = this.Match( ETokenTypes.ETT_KEYWORD_END );
-
-            return new ElseStatementNode( keyword, body, end );
+            return new ElseStatementNode( keyword, sub_if, body, end );
         }
 
         /// <summary>
@@ -431,16 +455,16 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseForStatement( ) {
             var keyword = this.Next( );
-            var identifier = this.ParseToken( );
+            var identifier = this.ParseToken( ETokenTypes.ETT_IDENTIFIER );
             var from = this.Match( ETokenTypes.ETT_KEYWORD_FROM );
-            var start = this.ParseToken( );
+            var lower = this.ParseToken( );
             var to = this.Match( ETokenTypes.ETT_KEYWORD_TO );
-            var target = this.ParseToken( );
+            var upper = this.ParseToken( );
             var do_ = this.Match( ETokenTypes.ETT_KEYWORD_DO );
             var body = this.ParseBody( );
             var end = this.Match( ETokenTypes.ETT_KEYWORD_END );
 
-            return new ForStatementNode( keyword, identifier, from, start, to, target, do_, body, end );
+            return new ForStatementNode( keyword, identifier, from, lower, to, upper, do_, body, end );
         }
 
         /// <summary>
@@ -451,12 +475,13 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseForeachStatement( ) {
             var keyword = this.Next( );
-            var identifier = this.ParseToken( );
+            var identifier = this.ParseToken(ETokenTypes.ETT_IDENTIFIER );
             var in_ = this.Match(ETokenTypes.ETT_KEYWORD_IN );
+            var collection = this.ParseToken( ETokenTypes.ETT_IDENTIFIER);
             var body = this.ParseBody( );
             var end = this.Match( ETokenTypes.ETT_KEYWORD_END );
 
-            return new ForeachStatementNode( keyword, identifier, in_, body, end );
+            return new ForeachStatementNode( keyword, identifier, in_, collection, body, end );
         }
 
         /// <summary>
@@ -501,7 +526,7 @@ namespace Aurora.Analysis.Syntax {
             if ( !this.Current.IsIdentifier )
                 this.EmitErrr( $"Unexpected token type <{this.Current.Type}>, expected <ETT_IDENTIFIER>.", this.Current.Meta );
 
-            var name = this.ParseToken( );
+            var name = this.ParseToken( ETokenTypes.ETT_IDENTIFIER );
             var parameters = this.ParseFunctionParameters( );
             var type = this.ParseType( );
             var body = this.ParseBody( name.TokenText );
@@ -518,17 +543,18 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseImportDeclaration( ) {
             var keyword = this.Next( );
-            var path = this.Match( ETokenTypes.ETT_IDENTIFIER );
+            var path = this.ParseToken( ETokenTypes.ETT_STRING );
+            var as_ = (Token)null;
             var name = (SyntaxNode)null;
 
             if ( this.Current.Type == ETokenTypes.ETT_KEYWORD_AS ) {
-                this.Next( );
-                name = this.ParseToken( );
+                as_ = this.Next( );
+                name = this.ParseToken( ETokenTypes.ETT_IDENTIFIER );
             }
 
             var end = this.Match( ETokenTypes.ETT_SEP_SEMICOLON );
 
-            return new ImportDeclarationNode( keyword, path, name, end );
+            return new ImportDeclarationNode( keyword, path, as_, name, end );
         }
 
         /// <summary>
@@ -544,8 +570,10 @@ namespace Aurora.Analysis.Syntax {
                 case ETokenTypes.ETT_SEP_OPEN_HUG : return this.ParseHugs( );
 
                 case ETokenTypes.ETT_KEYWORD_VAR :
-                case ETokenTypes.ETT_KEYWORD_DEFINE :
                     return this.ParseVariableDeclaration( );
+
+                case ETokenTypes.ETT_KEYWORD_DEFINE :
+                    return this.ParseDefineDeclaration( );
 
                 case ETokenTypes.ETT_KEYWORD_FUNCTION :
                     return this.ParseFunctionDeclaration( );

@@ -41,8 +41,8 @@ namespace Aurora.Analysis.Syntax {
         public Token Do { get; }
         public Token End { get; }
         public SyntaxNode Identifier { get; }
-        public SyntaxNode Start { get; }
-        public SyntaxNode Target { get; }
+        public SyntaxNode Lower { get; }
+        public SyntaxNode Upper { get; }
         public IEnumerable<SyntaxNode> Body { get; }
 
         public override IEnumerable<Token> Tokens {
@@ -58,22 +58,35 @@ namespace Aurora.Analysis.Syntax {
         public override IEnumerable<SyntaxNode> Childs {
             get {
                 yield return this.Identifier;
-                yield return this.Start;
-                yield return this.Target;
+                yield return this.Lower;
+                yield return this.Upper;
 
                 foreach ( var content in this.Body )
                     yield return content;
             }
         }
 
-        public ForStatementNode( Token keyword, SyntaxNode identifier, Token from, SyntaxNode start, Token to, SyntaxNode target, Token do_, IEnumerable<SyntaxNode> body, Token end ) 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <param name="keyword" >Current for statement keyword</param>
+        /// <param name="identifier" >Current for statement counter name</param>
+        /// <param name="from" >Current for statement from keyword</param>
+        /// <param name="lower" >Current for statement lower bound</param>
+        /// <param name="to" >Current for statement to keyword</param>
+        /// <param name="upper" >Current for statement upper bound</param>
+        /// <param name="do_" >Current for statement do keyword</param>
+        /// <param name="body" >Current for statement body</param>
+        /// <param name="end" >Current for statement end keyword</param>
+        public ForStatementNode( Token keyword, SyntaxNode identifier, Token from, SyntaxNode lower, Token to, SyntaxNode upper, Token do_, IEnumerable<SyntaxNode> body, Token end ) 
             : base( keyword ) 
         {
             this.Identifier = identifier;
             this.From = from;
-            this.Start = start;
+            this.Lower = lower;
             this.To = to;
-            this.Target = target;
+            this.Upper = upper;
             this.Do = do_;
             this.Body = body;
             this.End = end;

@@ -29,6 +29,11 @@ using System.Collections.Generic;
 
 namespace Aurora.Analysis.Syntax {
 
+    /// <summary>
+    /// WhileStatementNode class [ DeclarationNode ]
+    /// </summary>
+    /// <author>ALVES Quentin</author>
+    /// <note>Defined Aurora while statement core class</note>
     public class WhileStatementNode : StatementNode {
 
         public Token Then { get; }
@@ -53,6 +58,15 @@ namespace Aurora.Analysis.Syntax {
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <param name="keyword" >Current while statement keyword</param>
+        /// <param name="condition" >Current while statement condition</param>
+        /// <param name="then" >Current while statement then keyword</param>
+        /// <param name="body" >Current while statement body</param>
+        /// <param name="end" >Current while statement end keyword</param>
         public WhileStatementNode( Token keyword, SyntaxNode condition, Token then, IEnumerable<SyntaxNode> body, Token end ) 
             : base( keyword ) 
         {

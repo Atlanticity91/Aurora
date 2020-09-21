@@ -58,16 +58,18 @@ namespace Aurora.Analysis.Syntax {
             }
         }
 
-        public ElseStatementNode( Token keyword, SyntaxNode sub_if, Token end ) 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <param name="keyword" >Current else statement keyword</param>
+        /// <param name="sub_if" >Current else statement sub if statement</param>
+        /// <param name="body" >Current else statement body</param>
+        /// <param name="end" >Current else statement end keyword</param>
+        public ElseStatementNode( Token keyword, SyntaxNode sub_if, IEnumerable<SyntaxNode> body, Token end ) 
             : base( keyword ) 
         {
             this.Sub_if = sub_if;
-            this.End = end;
-        }
-
-        public ElseStatementNode( Token keyword, IEnumerable<SyntaxNode> body, Token end )
-            : base( keyword ) 
-        {
             this.Body = body;
             this.End = end;
         }

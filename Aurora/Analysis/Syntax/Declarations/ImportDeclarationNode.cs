@@ -36,22 +36,25 @@ namespace Aurora.Analysis.Syntax {
     /// <note>Defined Aurora import expression declaration core class</note>
     public class ImportDeclarationNode : DeclarationNode {
 
-        public Token Path { get; }
+        public Token As { get; }
         public Token End { get; }
-        public SyntaxNode Name { get; }
+        public SyntaxNode ModulePath { get; }
+        public SyntaxNode Identifier { get; }
 
         public override IEnumerable<Token> Tokens {
             get {
                 yield return this.Token;
-                yield return this.Path;
+                yield return this.As;
                 yield return this.End;
             }
         }
 
         public override IEnumerable<SyntaxNode> Childs {
             get {
-                if ( this.Name != null )
-                    yield return this.Name;
+                yield return this.ModulePath;
+
+                if ( this.Identifier != null )
+                    yield return this.Identifier;
             }
         }
 
@@ -60,14 +63,16 @@ namespace Aurora.Analysis.Syntax {
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <param name="keyword" >Current import declaration keyword</param>
-        /// <param name="path" >Current import declaration path</param>
+        /// <param name="path" >Current import declaration module path</param>
+        /// <param name="as_" >Current import declaration as keyword</param>
         /// <param name="name" >Current import declaration name</param>
         /// <param name="end" >Current import declaration end</param>
-        public ImportDeclarationNode( Token keyword, Token path, SyntaxNode name, Token end ) 
+        public ImportDeclarationNode( Token keyword, SyntaxNode path, Token as_, SyntaxNode name, Token end ) 
             : base( keyword ) 
         {
-            this.Path = path;
-            this.Name = name;
+            this.ModulePath = path;
+            this.As = as_;
+            this.Identifier = name;
             this.End = end;
         }
 

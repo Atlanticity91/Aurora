@@ -50,7 +50,9 @@ namespace Aurora.Analysis.Syntax {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="equal" >Current expression equal operator</param>
+        /// <param name="equal" >Current assign expression operator</param>
+        /// <param name="identifier" >Current assign expression identifier</param>
+        /// <param name="expression" >Current assign expression expression</param>
         public AssignExpressionNode( Token equal, SyntaxNode identifier, SyntaxNode expression )
             : base( equal ) 
         {

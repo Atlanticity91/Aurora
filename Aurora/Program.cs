@@ -47,14 +47,14 @@ namespace Aurora {
             var compiler = new Compiler( );
             var evaluator = new Evaluator( );
 
-            var result = compiler.Compile( "function r( ) if true && true then test = 10 * 4 + 520; end end" );
+            var result = compiler.CompileFile( "test.asf" );
             var evaluations = evaluator.Evaluate( compiler.Nodes );
 
             // Display all compilation error
             console.Display( compiler );
 
             // Display current compilation token list
-            console.Display( compiler.Tokens );
+            //console.Display( compiler.Tokens );
 
             // Display current compilation syntax node list
             console.Display( compiler.Nodes );

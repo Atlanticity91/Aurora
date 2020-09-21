@@ -39,6 +39,7 @@ namespace Aurora.Analysis.Lexem {
         ETT_UNKNOW,
         ETT_BLANK,
         ETT_IDENTIFIER,
+        ETT_STRING,
 
         ETT_KEYWORD_VAR,
         ETT_KEYWORD_DEFINE,
@@ -109,6 +110,7 @@ namespace Aurora.Analysis.Lexem {
         ETT_TYPE_IMATRIX2,
         ETT_TYPE_IMATRIX3,
         ETT_TYPE_IMATRIX4,
+        ETT_TYPE_STRING,
 
         ETT_SEP_OPEN_PARANTHESIS,
         ETT_SEP_OPEN_BRACKETS,
@@ -145,6 +147,7 @@ namespace Aurora.Analysis.Lexem {
         public bool IsKeyword => this.interal_IsKeyword( );
         public bool IsBoolean => this.Type == ETokenTypes.ETT_KEYWORD_TRUE || this.Type == ETokenTypes.ETT_KEYWORD_FALSE;
         public bool IsControlFlow => this.Type == ETokenTypes.ETT_KEYWORD_CONTINUE || this.Type == ETokenTypes.ETT_KEYWORD_BREAK;
+        public bool IsString => this.Type == ETokenTypes.ETT_STRING;
 
         /// <summary>
         /// Constructor
@@ -274,6 +277,7 @@ namespace Aurora.Analysis.Lexem {
                 case ETokenTypes.ETT_TYPE_IMATRIX2 :
                 case ETokenTypes.ETT_TYPE_IMATRIX3 :
                 case ETokenTypes.ETT_TYPE_IMATRIX4 :
+                case ETokenTypes.ETT_TYPE_STRING :
                     return true;
             }
 

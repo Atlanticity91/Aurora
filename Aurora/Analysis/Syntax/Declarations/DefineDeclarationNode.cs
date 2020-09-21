@@ -24,46 +24,44 @@
  * 
  **/
 
+using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Aurora.Diagnostics {
+namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// DiagnosticBag class
+    /// DefineDeclarationNode class [ DeclarationNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora core code for diagnostic bag support</note>
-    public class DiagnosticBag {
+    /// <note>Defined Aurora define declaration core class</note>
+    public class DefineDeclarationNode : DeclarationNode {
 
-        private List<DiagnosticReport> reports;
+        public Token End { get; }
+        public SyntaxNode Expression { get; }
 
-        public bool HasReports => this.reports.Count > 0;
-        public IEnumerable<DiagnosticReport> Reports => this.reports;
-        public bool HasError => this.reports.Count( report => report.ErrrCount > 0 ) > 0;
+        public override IEnumerable<Token> Tokens {
+            get {
+                yield return this.Token;
+                yield return this.End;
+            }
+        }
+
+        public override IEnumerable<SyntaxNode> Childs {
+            get { yield return this.Expression; }
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        public DiagnosticBag( ) => this.reports = new List<DiagnosticReport>( );
-
-        /// <summary>
-        /// ClearBag method
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <note>Clear current diagnostic bag</note>
-        public void ClearBag( ) => this.reports.Clear( );
-
-        /// <summary>
-        /// Merge method
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <note>Merge diagnostic report with current diagnostic bag</note>
-        /// <param name="report" >Query report to merge</param>
-        public void Merge( DiagnosticReport report ) {
-            if ( report != null && report.HasDiagnostics )
-                this.reports.Add( report );
+        /// <param name="keyword" >Current variable declaration keyword</param>
+        /// <param name="expression" >Current variable delcaration expression</param>
+        /// <param name="end" >Current variable declaration end</param>
+        public DefineDeclarationNode( Token keyword, SyntaxNode expression, Token end ) 
+            : base( keyword ) 
+        {
+            this.Expression = expression;
+            this.End = end;
         }
 
     }

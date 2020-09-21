@@ -39,6 +39,7 @@ namespace Aurora.Analysis.Syntax {
         public Token In_ { get; }
         public Token End { get; }
         public SyntaxNode Identifier { get; }
+        public SyntaxNode Collection { get; }
         public IEnumerable<SyntaxNode> Body { get; }
 
         public override IEnumerable<Token> Tokens {
@@ -58,11 +59,22 @@ namespace Aurora.Analysis.Syntax {
             }
         }
 
-        public ForeachStatementNode( Token keyword, SyntaxNode identifier, Token in_, IEnumerable<SyntaxNode> body, Token end ) 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <param name="keyword" >Current foreach statement keyword</param>
+        /// <param name="identifier" >Current foreach statement variable name</param>
+        /// <param name="in_" >Current foreach statement in keyword</param>
+        /// <param name="collection" >Current foreach statement collection</param>
+        /// <param name="body" >Current foreach statement body</param>
+        /// <param name="end" >Current foreach statement end keyword</param>
+        public ForeachStatementNode( Token keyword, SyntaxNode identifier, Token in_, SyntaxNode collection, IEnumerable<SyntaxNode> body, Token end ) 
             : base( keyword ) 
         {
             this.Identifier = identifier;
             this.In_ = in_;
+            this.Collection = collection;
             this.Body = body;
             this.End = end;
         }
