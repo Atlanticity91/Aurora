@@ -30,38 +30,31 @@ using System.Collections.Generic;
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// FunctionDeclarationNode class [ DeclarationNode ]
+    /// IfStatementNode class [ DeclarationNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora function expression declaration core class</note>
-    public class FunctionDeclarationNode : DeclarationNode {
+    /// <note>Defined Aurora if statement core class</note>
+    public class IfStatementNode : StatementNode {
 
+        public Token Then { get; }
         public Token End { get; }
-        public SyntaxNode Identifier { get; }
-        public SyntaxNode Parameters { get; }
-        public SyntaxNode ReturnType { get; }
+        public SyntaxNode Condition { get; }
         public IEnumerable<SyntaxNode> Body { get; }
 
         public override IEnumerable<Token> Tokens {
             get {
                 yield return this.Token;
+                yield return this.Then;
                 yield return this.End;
             }
         }
 
         public override IEnumerable<SyntaxNode> Childs {
-            get {
-                yield return this.Identifier;
+            get { 
+                yield return this.Condition;
 
-                if ( this.ReturnType != null )
-                    yield return this.ReturnType;
-
-                yield return this.Parameters;
-
-                if ( this.Body != null ) {
-                    foreach ( var content in this.Body )
-                        yield return content;
-                } 
+                foreach ( var content in this.Body )
+                    yield return content;
             }
         }
 
@@ -69,22 +62,19 @@ namespace Aurora.Analysis.Syntax {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="keyword" >Current function declaration keyword</param>
-        /// <param name="name" >Current function declaration name</param>
-        /// <param name="parameters" >Current function declaration parameters</param>
-        /// <param name="type" >Current function declaration type</param>
+        /// <param name="keyword" >Current if statement keyword</param>
+        /// <param name="condition" >Current if statement condition expression</param>
+        /// <param name="then" >Current if statement then keyword</param>
         /// <param name="body" >Current function declaration body</param>
-        /// <param name="end" >Current function declaration end</param>
-        public FunctionDeclarationNode( Token keyword, SyntaxNode name, SyntaxNode parameters, SyntaxNode type, IEnumerable<SyntaxNode> body, Token end ) 
+        /// <param name="end" >Current if statement end keyword</param>
+        public IfStatementNode( Token keyword, SyntaxNode condition, Token then, IEnumerable<SyntaxNode> body, Token end ) 
             : base( keyword ) 
         {
-            this.Identifier = name;
-            this.Parameters = parameters;
-            this.ReturnType = type;
+            this.Condition = condition;
+            this.Then = then;
             this.Body = body;
             this.End = end;
         }
-
     }
 
 }

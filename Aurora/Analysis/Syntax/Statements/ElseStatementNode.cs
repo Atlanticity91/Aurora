@@ -30,16 +30,14 @@ using System.Collections.Generic;
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// FunctionDeclarationNode class [ DeclarationNode ]
+    /// ElseStatementNode class [ DeclarationNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora function expression declaration core class</note>
-    public class FunctionDeclarationNode : DeclarationNode {
+    /// <note>Defined Aurora else statement core class</note>
+    public class ElseStatementNode : StatementNode {
 
         public Token End { get; }
-        public SyntaxNode Identifier { get; }
-        public SyntaxNode Parameters { get; }
-        public SyntaxNode ReturnType { get; }
+        public SyntaxNode Sub_if { get; }
         public IEnumerable<SyntaxNode> Body { get; }
 
         public override IEnumerable<Token> Tokens {
@@ -51,36 +49,25 @@ namespace Aurora.Analysis.Syntax {
 
         public override IEnumerable<SyntaxNode> Childs {
             get {
-                yield return this.Identifier;
-
-                if ( this.ReturnType != null )
-                    yield return this.ReturnType;
-
-                yield return this.Parameters;
-
-                if ( this.Body != null ) {
+                if ( this.Sub_if != null )
+                    yield return this.Sub_if;
+                else {
                     foreach ( var content in this.Body )
                         yield return content;
-                } 
+                }
             }
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <param name="keyword" >Current function declaration keyword</param>
-        /// <param name="name" >Current function declaration name</param>
-        /// <param name="parameters" >Current function declaration parameters</param>
-        /// <param name="type" >Current function declaration type</param>
-        /// <param name="body" >Current function declaration body</param>
-        /// <param name="end" >Current function declaration end</param>
-        public FunctionDeclarationNode( Token keyword, SyntaxNode name, SyntaxNode parameters, SyntaxNode type, IEnumerable<SyntaxNode> body, Token end ) 
+        public ElseStatementNode( Token keyword, SyntaxNode sub_if, Token end ) 
             : base( keyword ) 
         {
-            this.Identifier = name;
-            this.Parameters = parameters;
-            this.ReturnType = type;
+            this.Sub_if = sub_if;
+            this.End = end;
+        }
+
+        public ElseStatementNode( Token keyword, IEnumerable<SyntaxNode> body, Token end )
+            : base( keyword ) 
+        {
             this.Body = body;
             this.End = end;
         }

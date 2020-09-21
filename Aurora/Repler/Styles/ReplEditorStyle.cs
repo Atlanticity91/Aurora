@@ -27,7 +27,7 @@
 using Aurora.Utils;
 using System;
 
-namespace Aurora.Repler {
+namespace Aurora.Repler.Styles {
 
     /// <summary>
     /// ReplEditorStyle class [ ReplConsoleStyle ]
@@ -67,6 +67,15 @@ namespace Aurora.Repler {
             this.DocumentSepratator = new Color( ConsoleColor.Gray, this.Background );
             this.NewLine = new Color( ConsoleColor.Green, this.Background );
             this.Command = new Color( ConsoleColor.Gray, this.Background );
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        public ReplEditorStyle( ) 
+            : this( "Default" ) 
+        { 
         }
 
     }

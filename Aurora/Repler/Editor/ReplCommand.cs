@@ -28,68 +28,57 @@ using Aurora.Utils;
 using System;
 using System.Reflection;
 
-namespace Aurora.Repler {
+namespace Aurora.Repler.Editor {
 
     /// <summary>
-    /// ReplControl sealed class [ Attribute ]
+    /// ReplCommand sealed class [ Attribute ]
     /// </summary>
     /// <author>ALVES Quentin</author>
     /// <note>Defined Aurora Repler command core code</note>
     [AttributeUsage( AttributeTargets.Method, AllowMultiple = false )]
-    public sealed class ReplControl : Attribute {
+    public sealed class ReplCommand : Attribute {
 
-        public ConsoleModifiers? Modifier { get; }
-        public ConsoleKey Key { get; }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <param name="key" >Key use by the control</param>
-        public ReplControl( ConsoleKey key ) {
-            this.Modifier = null;
-            this.Key = key;
-        }
+        public string Name { get; }
+        public string Description { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="modifier" >Modifier use to invoke the control</param>
-        /// <param name="key" >Key use by the control</param>
-        public ReplControl( ConsoleModifiers? modifier, ConsoleKey key ) {
-            this.Modifier = modifier;
-            this.Key = key;
+        /// <param name="name" >Name of the command</param>
+        /// <param name="description" >Description of the command</param>
+        public ReplCommand( string name, string description ) {
+            this.Name = name;
+            this.Description = description;
         }
 
     }
 
     /// <summary>
-    /// ReplControlMeta sealed class [ AttributeMeta<ReplControl> ] 
+    /// ReplCommandMeta sealed class [ AttributeMeta<ReplCommand> ] 
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora Repler control meta core code</note>
-    internal sealed class ReplControlMeta : AttributeMeta<ReplControl> {
+    /// <note>Defined Aurora Repler command meta core code</note>
+    internal sealed class ReplCommandMeta : AttributeMeta<ReplCommand> {
 
-        public bool HasModifier => this.Attribute.Modifier != null;
-        public ConsoleModifiers? Modifier => this.Attribute.Modifier;
-        public ConsoleKey Key => this.Attribute.Key;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        public ReplControlMeta( ) : base( ) { }
+        public string Name => this.Attribute.Name;
+        public string Description => this.Attribute.Description;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="control" >Current control</param>
+        public ReplCommandMeta( ) : base( ) { }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <param name="command" >Current command</param>
         /// <param name="action" >Current action</param>
-        public ReplControlMeta( ReplControl control, MethodInfo action ) 
-            : base( control, action )
-        { 
+        public ReplCommandMeta( ReplCommand command, MethodInfo action ) 
+            : base( command, action )
+        {
         }
 
     }

@@ -39,18 +39,25 @@ namespace Aurora.Analysis.Syntax {
         public Token Name { get; }
         public Token End { get; }
         public SyntaxNode VariableType { get; }
+        public SyntaxNode Expression { get; }
 
         public override IEnumerable<Token> Tokens {
             get {
                 yield return this.Token;
-                yield return this.Name;
+
+                if ( this.VariableType != null )
+                    yield return this.Name;
+
                 yield return this.End;
             }
         }
 
         public override IEnumerable<SyntaxNode> Childs {
             get {
-                yield return this.VariableType;
+                if ( this.VariableType != null )
+                    yield return this.VariableType;
+                else
+                    yield return this.Expression;
             }
         }
 
@@ -62,11 +69,27 @@ namespace Aurora.Analysis.Syntax {
         /// <param name="name" >Current variable declaration name</param>
         /// <param name="type" >Current variable declaration type</param>
         /// <param name="end" >Current variable declaration end</param>
-        public VariableDeclarationNode( Token keyword, Token name, SyntaxNode type, Token end ) 
+        public VariableDeclarationNode( Token keyword, Token name, SyntaxNode type, Token end )
             : base( keyword ) 
         {
             this.Name = name;
             this.VariableType = type;
+            this.Expression = null;
+            this.End = end;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <param name="keyword" >Current variable declaration keyword</param>
+        /// <param name="expression" >Current variable delcaration expression</param>
+        /// <param name="end" >Current variable declaration end</param>
+        public VariableDeclarationNode( Token keyword, SyntaxNode expression, Token end )
+            : base( keyword ) 
+        {
+            this.VariableType = null;
+            this.Expression = expression;
             this.End = end;
         }
 

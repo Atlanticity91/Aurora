@@ -27,6 +27,7 @@
 using Aurora.Analysis.Lexem;
 using Aurora.Analysis.Syntax;
 using Aurora.Diagnostics;
+using Aurora.Repler.Styles;
 using Aurora.Utils;
 using System;
 using System.Collections.Generic;
@@ -134,17 +135,23 @@ namespace Aurora.Repler {
 
                     var tokens = node.Tokens;
                     if ( tokens != null ) {
+                        var color = (Color)null;
+
                         foreach ( var token in tokens ) {
                             if ( token.IsSeparator )
-                                this.Display( this.Style.Separator, $"{token.Meta.Value} " );
+                                color = this.Style.Separator;
                             else if ( token.IsOperator )
-                                this.Display( this.Style.Operator, $"{token.Meta.Value} " );
+                                color = this.Style.Operator;
                             else if ( token.IsLiteral )
-                                this.Display( this.Style.Literal, $"{token.Meta.Value} " );
+                                color = this.Style.Literal;
                             else if ( token.IsKeyword )
-                                this.Display( this.Style.Keyword, $"{token.Meta.Value} " );
+                                color = this.Style.Keyword;
+                            else if ( token.IsType )
+                                color = this.Style.Type;
                             else
-                                this.Display( this.Style.Text, $"{token.Meta.Value} " );
+                                color = this.Style.Text;
+
+                            this.Display( color, $"{token.Meta.Value} " );
                         }
 
                         Console.Write( "\n" );

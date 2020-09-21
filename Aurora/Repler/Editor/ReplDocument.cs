@@ -24,51 +24,22 @@
  * 
  **/
 
-using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
 
-namespace Aurora.Analysis.Syntax {
+namespace Aurora.Repler.Editor {
 
     /// <summary>
-    /// ImportDeclarationNode class [ DeclarationNode ]
+    /// ReplDocument sealed class 
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora import expression declaration core class</note>
-    public class ImportDeclarationNode : DeclarationNode {
-
-        public Token Path { get; }
-        public Token End { get; }
-        public SyntaxNode Name { get; }
-
-        public override IEnumerable<Token> Tokens {
-            get {
-                yield return this.Token;
-                yield return this.Path;
-                yield return this.End;
-            }
-        }
-
-        public override IEnumerable<SyntaxNode> Childs {
-            get {
-                if ( this.Name != null )
-                    yield return this.Name;
-            }
-        }
+    /// <note>Defined Aurora Repler document core code</note>
+    public sealed class ReplDocument {
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="keyword" >Current import declaration keyword</param>
-        /// <param name="path" >Current import declaration path</param>
-        /// <param name="name" >Current import declaration name</param>
-        /// <param name="end" >Current import declaration end</param>
-        public ImportDeclarationNode( Token keyword, Token path, SyntaxNode name, Token end ) 
-            : base( keyword ) 
-        {
-            this.Path = path;
-            this.Name = name;
-            this.End = end;
+        public ReplDocument( ) {
         }
 
     }

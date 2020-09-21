@@ -47,6 +47,9 @@ namespace Aurora.Analysis.Syntax {
         ENT_DECLARATION,
         ENT_STATEMENT,
         ENT_HUGS,
+        ENT_BOOLEAN,
+        ENT_CONTROL_FLOW,
+
     }
 
     /// <summary>

@@ -30,21 +30,27 @@ using System.Collections.Generic;
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// FunctionDeclarationNode class [ DeclarationNode ]
+    /// ForStatementNode class [ DeclarationNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora function expression declaration core class</note>
-    public class FunctionDeclarationNode : DeclarationNode {
+    /// <note>Defined Aurora for statement core class</note>
+    public class ForStatementNode : StatementNode {
 
+        public Token From { get; }
+        public Token To { get; }
+        public Token Do { get; }
         public Token End { get; }
         public SyntaxNode Identifier { get; }
-        public SyntaxNode Parameters { get; }
-        public SyntaxNode ReturnType { get; }
+        public SyntaxNode Start { get; }
+        public SyntaxNode Target { get; }
         public IEnumerable<SyntaxNode> Body { get; }
 
         public override IEnumerable<Token> Tokens {
             get {
                 yield return this.Token;
+                yield return this.From;
+                yield return this.To;
+                yield return this.Do;
                 yield return this.End;
             }
         }
@@ -52,35 +58,23 @@ namespace Aurora.Analysis.Syntax {
         public override IEnumerable<SyntaxNode> Childs {
             get {
                 yield return this.Identifier;
+                yield return this.Start;
+                yield return this.Target;
 
-                if ( this.ReturnType != null )
-                    yield return this.ReturnType;
-
-                yield return this.Parameters;
-
-                if ( this.Body != null ) {
-                    foreach ( var content in this.Body )
-                        yield return content;
-                } 
+                foreach ( var content in this.Body )
+                    yield return content;
             }
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <param name="keyword" >Current function declaration keyword</param>
-        /// <param name="name" >Current function declaration name</param>
-        /// <param name="parameters" >Current function declaration parameters</param>
-        /// <param name="type" >Current function declaration type</param>
-        /// <param name="body" >Current function declaration body</param>
-        /// <param name="end" >Current function declaration end</param>
-        public FunctionDeclarationNode( Token keyword, SyntaxNode name, SyntaxNode parameters, SyntaxNode type, IEnumerable<SyntaxNode> body, Token end ) 
+        public ForStatementNode( Token keyword, SyntaxNode identifier, Token from, SyntaxNode start, Token to, SyntaxNode target, Token do_, IEnumerable<SyntaxNode> body, Token end ) 
             : base( keyword ) 
         {
-            this.Identifier = name;
-            this.Parameters = parameters;
-            this.ReturnType = type;
+            this.Identifier = identifier;
+            this.From = from;
+            this.Start = start;
+            this.To = to;
+            this.Target = target;
+            this.Do = do_;
             this.Body = body;
             this.End = end;
         }

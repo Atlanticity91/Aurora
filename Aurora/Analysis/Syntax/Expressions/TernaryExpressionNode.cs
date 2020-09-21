@@ -27,31 +27,24 @@
 using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
 
-namespace Aurora.Analysis.Syntax {
+namespace Aurora.Analysis.Syntax.Expressions {
 
     /// <summary>
-    /// ImportDeclarationNode class [ DeclarationNode ]
+    /// TernaryExpressionNode class [ SyntaxNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora import expression declaration core class</note>
-    public class ImportDeclarationNode : DeclarationNode {
+    /// <note>Defined Aurora ternary expression node core class</note>
+    public class TernaryExpressionNode : ExpressionNode {
 
-        public Token Path { get; }
-        public Token End { get; }
-        public SyntaxNode Name { get; }
-
-        public override IEnumerable<Token> Tokens {
-            get {
-                yield return this.Token;
-                yield return this.Path;
-                yield return this.End;
-            }
-        }
+        public SyntaxNode Condition { get; }
+        public SyntaxNode True { get; }
+        public SyntaxNode False { get; }
 
         public override IEnumerable<SyntaxNode> Childs {
             get {
-                if ( this.Name != null )
-                    yield return this.Name;
+                yield return this.Condition;
+                yield return this.True;
+                yield return this.False;
             }
         }
 
@@ -59,16 +52,16 @@ namespace Aurora.Analysis.Syntax {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="keyword" >Current import declaration keyword</param>
-        /// <param name="path" >Current import declaration path</param>
-        /// <param name="name" >Current import declaration name</param>
-        /// <param name="end" >Current import declaration end</param>
-        public ImportDeclarationNode( Token keyword, Token path, SyntaxNode name, Token end ) 
-            : base( keyword ) 
+        /// <param name="operator_" >Current ternary expression operator</param>
+        /// <param name="condition" >Current ternary expression condition</param>
+        /// <param name="true_" >Current ternary expression left operand</param>
+        /// <param name="false_" >Current ternary expression right operand</param>
+        public TernaryExpressionNode( Token operator_, SyntaxNode condition, SyntaxNode true_, SyntaxNode false_ )
+            : base( operator_ ) 
         {
-            this.Path = path;
-            this.Name = name;
-            this.End = end;
+            this.Condition = condition;
+            this.True = true_;
+            this.False = false_;
         }
 
     }

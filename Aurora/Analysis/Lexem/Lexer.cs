@@ -74,22 +74,27 @@ namespace Aurora.Analysis.Lexem {
         /// <author>ALVES Quentin</author>
         /// <note>Initialize current lexer</note>
         protected virtual void Initialize( ) {
-            this.Register( "var", ETokenTypes.ETT_KEYWORD );
-            this.Register( "define", ETokenTypes.ETT_KEYWORD );
-            this.Register( "if", ETokenTypes.ETT_KEYWORD );
-            this.Register( "else", ETokenTypes.ETT_KEYWORD );
-            this.Register( "for", ETokenTypes.ETT_KEYWORD );
-            this.Register( "foreach", ETokenTypes.ETT_KEYWORD );
-            this.Register( "while", ETokenTypes.ETT_KEYWORD );
-            this.Register( "end", ETokenTypes.ETT_KEYWORD );
-            this.Register( "then", ETokenTypes.ETT_KEYWORD );
-            this.Register( "true", ETokenTypes.ETT_KEYWORD );
-            this.Register( "false", ETokenTypes.ETT_KEYWORD );
-            this.Register( "function", ETokenTypes.ETT_KEYWORD );
-            this.Register( "return", ETokenTypes.ETT_KEYWORD );
-            this.Register( "break", ETokenTypes.ETT_KEYWORD );
-            this.Register( "import", ETokenTypes.ETT_KEYWORD );
-            this.Register( "as", ETokenTypes.ETT_KEYWORD );
+            this.Register( "var", ETokenTypes.ETT_KEYWORD_VAR );
+            this.Register( "define", ETokenTypes.ETT_KEYWORD_DEFINE );
+            this.Register( "if", ETokenTypes.ETT_KEYWORD_IF );
+            this.Register( "else", ETokenTypes.ETT_KEYWORD_ELSE );
+            this.Register( "for", ETokenTypes.ETT_KEYWORD_FOR );
+            this.Register( "foreach", ETokenTypes.ETT_KEYWORD_FOREACH );
+            this.Register( "while", ETokenTypes.ETT_KEYWORD_WHILE );
+            this.Register( "end", ETokenTypes.ETT_KEYWORD_END );
+            this.Register( "then", ETokenTypes.ETT_KEYWORD_THEN );
+            this.Register( "true", ETokenTypes.ETT_KEYWORD_TRUE );
+            this.Register( "false", ETokenTypes.ETT_KEYWORD_FALSE );
+            this.Register( "function", ETokenTypes.ETT_KEYWORD_FUNCTION );
+            this.Register( "return", ETokenTypes.ETT_KEYWORD_RETURN );
+            this.Register( "continue", ETokenTypes.ETT_KEYWORD_CONTINUE );
+            this.Register( "break", ETokenTypes.ETT_KEYWORD_BREAK );
+            this.Register( "import", ETokenTypes.ETT_KEYWORD_IMPORT );
+            this.Register( "as", ETokenTypes.ETT_KEYWORD_AS );
+            this.Register( "in", ETokenTypes.ETT_KEYWORD_IN );
+            this.Register( "from", ETokenTypes.ETT_KEYWORD_FROM );
+            this.Register( "to", ETokenTypes.ETT_KEYWORD_TO );
+            this.Register( "do", ETokenTypes.ETT_KEYWORD_DO );
 
             this.Register( "=", ETokenTypes.ETT_OP_ASIGN );
             this.Register( "+", ETokenTypes.ETT_OP_ADD );
@@ -114,6 +119,7 @@ namespace Aurora.Analysis.Lexem {
             this.Register( ":", ETokenTypes.ETT_OP_ASIGN_TYPE );
             this.Register( ".", ETokenTypes.ETT_OP_MEMBER );
             this.Register( "::", ETokenTypes.ETT_OP_NAME_MEMBER );
+            this.Register( "?", ETokenTypes.ETT_OP_TERNARY );
             this.Register( "&", ETokenTypes.ETT_OP_UADD );
             this.Register( "|", ETokenTypes.ETT_OP_UXOR );
             this.Register( "^", ETokenTypes.ETT_OP_UOR );
@@ -126,6 +132,12 @@ namespace Aurora.Analysis.Lexem {
             this.Register( "long", ETokenTypes.ETT_TYPE_INT64 );
             this.Register( "float", ETokenTypes.ETT_TYPE_FLOAT32 );
             this.Register( "double", ETokenTypes.ETT_TYPE_FLOAT64 );
+            this.Register( "mat2", ETokenTypes.ETT_TYPE_MATRIX2 );
+            this.Register( "mat3", ETokenTypes.ETT_TYPE_MATRIX3 );
+            this.Register( "mat4", ETokenTypes.ETT_TYPE_MATRIX4 );
+            this.Register( "imat2", ETokenTypes.ETT_TYPE_IMATRIX2 );
+            this.Register( "imat3", ETokenTypes.ETT_TYPE_IMATRIX3 );
+            this.Register( "imat4", ETokenTypes.ETT_TYPE_IMATRIX4 );
 
             this.Register( "(", ETokenTypes.ETT_SEP_OPEN_PARANTHESIS );
             this.Register( "[", ETokenTypes.ETT_SEP_OPEN_BRACKETS );
@@ -173,6 +185,7 @@ namespace Aurora.Analysis.Lexem {
         /// <author>ALVES Quentin</author>
         /// <note>Parse line to tokens</note>
         /// <param name="text" >Query text of the line</param>
+        /// <param name="line" >Current line index</param>
         /// <returns>DiagnosticReport</returns>
         protected DiagnosticReport Parse( string text, ref int line ) {
             var chars = text.ToCharArray( );
@@ -226,6 +239,23 @@ namespace Aurora.Analysis.Lexem {
                 this.EmitErrr( "No input string for lexer.", null );
 
             return this.Report;
+        }
+
+        /// <summary>
+        /// ParseLine internal function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Parse line to tokens</note>
+        /// <param name="text" >Current line text</param>
+        /// <param name="line" >Current line index</param>
+        /// <returns>IEnumerable<Token></returns>
+        internal IEnumerable<Token> ParseLine( string text, int line ) {
+            this.Prepare( );
+
+            if ( !string.IsNullOrEmpty( text ) )
+                this.Parse( text, ref line );
+
+            return this.tokens;
         }
 
     }

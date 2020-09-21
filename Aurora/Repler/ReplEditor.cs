@@ -24,6 +24,9 @@
  * 
  **/
 
+using Aurora.Analysis.Lexem;
+using Aurora.Repler.Editor;
+using Aurora.Repler.Styles;
 using Aurora.Utils;
 using System;
 using System.Collections.Generic;
@@ -42,6 +45,8 @@ namespace Aurora.Repler {
         private IEnumerable<ReplControlMeta> controls;
         private IEnumerable<ReplCommandMeta> commands;
         private LocationMeta cursor;
+        private Lexer lexer;
+        protected bool is_running;
 
         /// <summary>
         /// Constructor
@@ -52,9 +57,13 @@ namespace Aurora.Repler {
         {
             Console.Title = "Aurora Repl Editor.";
 
+            this.SetStyle<ReplEditorStyle>( );
+
             this.controls = new List<ReplControlMeta>( );
             this.commands = new List<ReplCommandMeta>( );
             this.cursor = new LocationMeta( 0, 0 );
+            this.lexer = new Lexer( );
+            this.is_running = true;
 
             this.Initialize( );
         }
@@ -95,6 +104,8 @@ namespace Aurora.Repler {
         /// <author>ALVES Quentin</author>
         /// <note>Run current Aurora repler editor instance</note>
         public void Run( ) {
+            while ( this.is_running ) {
+            }
         }
 
     }

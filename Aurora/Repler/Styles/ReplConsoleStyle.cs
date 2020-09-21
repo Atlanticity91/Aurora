@@ -27,7 +27,7 @@
 using Aurora.Utils;
 using System;
 
-namespace Aurora.Repler {
+namespace Aurora.Repler.Styles {
 
     /// <summary>
     /// ReplConsole class
@@ -40,6 +40,7 @@ namespace Aurora.Repler {
         public ConsoleColor Background { get; }
         public Color Text { get; protected set; }
         public Color Keyword { get; protected set; }
+        public Color Type { get; protected set; }
         public Color Literal { get; protected set; }
         public Color Operator { get; protected set; }
         public Color Separator { get; protected set; }
@@ -59,6 +60,7 @@ namespace Aurora.Repler {
             this.Background = ConsoleColor.Black;
             this.Text = new Color( ConsoleColor.Gray, this.Background );
             this.Keyword = new Color( ConsoleColor.Blue, this.Background );
+            this.Type = new Color( ConsoleColor.DarkBlue, this.Background );
             this.Literal = new Color( ConsoleColor.Cyan, this.Background );
             this.Operator = new Color( ConsoleColor.DarkYellow, this.Background );
             this.Separator = new Color( ConsoleColor.DarkGray, this.Background );
