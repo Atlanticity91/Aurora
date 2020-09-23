@@ -153,6 +153,15 @@ namespace Aurora.Analysis.Lexem {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
+        public Token( ) {
+            this.Type = ETokenTypes.ETT_UNKNOW;
+            this.Meta = null;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
         /// <param name="line" >Line ID of the end of file token</param>
         public Token( int line ) {
             this.Type = ETokenTypes.ETT_EOF;

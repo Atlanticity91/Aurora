@@ -24,7 +24,6 @@
  * 
  **/
 
-using Aurora.Diagnostics;
 using Aurora.Utils;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,13 +31,13 @@ using System.Linq;
 namespace Aurora.Analysis.Lexem {
 
     /// <summary>
-    /// Lexer class [ Diagnosable ]
+    /// Lexer class [ Parser ]
     /// </summary>
     /// <author>ALVES Quentin</author>
     /// <note>Defined Aurora lexer core class</note>
-    public class Lexer : Diagnosable {
+    public class Lexer : Parser<string> {
 
-        private List<Token> tokens;
+        protected List<Token> tokens;
         private Dictionary<string, ETokenTypes> token_table;
 
         public IEnumerable<Token> Tokens => this.tokens;
@@ -64,16 +63,16 @@ namespace Aurora.Analysis.Lexem {
         /// <param name="span" >Token span</param>
         /// <param name="type" >Token type</param>
         protected void Register( string span, ETokenTypes type ) {
-            if ( !this.token_table.ContainsKey( span ) )
+            if ( this.token_table != null && !this.token_table.ContainsKey( span ) )
                 this.token_table.Add( span, type );
         }
 
         /// <summary>
-        /// Initialize virtual method
+        /// Initialize method
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Initialize current lexer</note>
-        protected virtual void Initialize( ) {
+        protected override void Initialize( ) {
             this.Register( "var", ETokenTypes.ETT_KEYWORD_VAR );
             this.Register( "define", ETokenTypes.ETT_KEYWORD_DEFINE );
             this.Register( "if", ETokenTypes.ETT_KEYWORD_IF );
@@ -155,13 +154,14 @@ namespace Aurora.Analysis.Lexem {
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Prepare the lexer for compilation</note>
-        protected virtual void Prepare( ) {
+        /// <param name="lines" >Source lines to parse</param>
+        protected override void Prepare( IEnumerable<string> elements ) {
             this.ClearDiags( );
             this.tokens.Clear( );
         }
 
         /// <summary>
-        /// Parse virtual function
+        /// ParseToken virtual function
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Parse a span to Token</note>
@@ -169,42 +169,41 @@ namespace Aurora.Analysis.Lexem {
         /// <param name="position" >Position from the start of the line</param>
         /// <param name="span" >Current substring of the line</param>
         /// <returns>Token</returns>
-        protected virtual Token Parse( int line, int position, string span ) {
+        protected virtual Token ParseToken( int line, int position, string span ) {
             if ( this.token_table.ContainsKey( span ) )
                 return new Token( this.token_table[ span ], line, position, span );
             else if ( span.IsBlank( ) )
                 return new Token( ETokenTypes.ETT_BLANK, line, position, span );
             else if ( span.IsLitteral( ) )
                 return new Token( ETokenTypes.ETT_LITERAL, line, position, span );
+            else if ( span == "\"" )
+                return new Token( ETokenTypes.ETT_STRING, line, position, span );
 
             return new Token( ETokenTypes.ETT_IDENTIFIER, line, position, span );
         }
 
         /// <summary>
-        /// Parse function
+        /// ParseText virtual method
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Parse line to tokens</note>
         /// <param name="text" >Query text of the line</param>
         /// <param name="line" >Current line index</param>
-        /// <returns>DiagnosticReport</returns>
-        protected DiagnosticReport Parse( string text, ref int line ) {
+        protected virtual void ParseText( string text, ref int line ) {
             var chars = text.ToCharArray( );
             var char_id = 0;
             var start = 0;
-            var old = chars[ char_id ].GetCharType( );
-
-            // TODO : Extend char GetCharType
+            var old = ' ';
 
             while ( char_id < chars.Length ) {
                 do 
-                    old = chars[ char_id++ ].GetCharType( );
-                while ( char_id < chars.Length && chars[ char_id ].GetCharType( ) == old );
+                    old = chars[ char_id++ ];
+                while ( char_id < chars.Length && !chars[ char_id ].GetSubmissionEnd( old, char_id ) );
 
                 var span = text.Substring( start, char_id - start );
 
                 if ( !span.IsBlank( ) ) {
-                    var token = this.Parse( line, char_id, span );
+                    var token = this.ParseToken( line, char_id, span );
 
                     this.tokens.Add( token );
                 } else if ( span.Contains( "\n" ) )
@@ -212,26 +211,21 @@ namespace Aurora.Analysis.Lexem {
 
                 start = char_id;
             }
-
-            return this.Report;
         }
 
         /// <summary>
-        /// Parse function
+        /// InternalParse method
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Parse line to tokens</note>
-        /// <param name="lines"></param>
-        /// <returns>DiagnosticReport</returns>
-        public DiagnosticReport Parse( IEnumerable<string> lines ) {
-            this.Prepare( );
-
+        /// <note>Parse syntax nodes for type checking</note>
+        /// <param name="nodes" >Current syntax node list</param>
+        protected override void InternalParse( IEnumerable<string> lines ) {
             if ( lines != null ) {
                 var line_id = 0;
 
                 foreach ( var line in lines ) {
-                    if ( !string.IsNullOrEmpty( line ) ) 
-                        this.Merge( this.Parse( line, ref line_id ) );
+                    if ( !string.IsNullOrEmpty( line ) )
+                        this.ParseText( line, ref line_id );
 
                     line_id += 1;
                 }
@@ -239,8 +233,6 @@ namespace Aurora.Analysis.Lexem {
                 this.tokens.Add( new Token( lines.Count( ) ) );
             } else
                 this.EmitErrr( "No input string for lexer.", null );
-
-            return this.Report;
         }
 
         /// <summary>
@@ -251,11 +243,11 @@ namespace Aurora.Analysis.Lexem {
         /// <param name="text" >Current line text</param>
         /// <param name="line" >Current line index</param>
         /// <returns>IEnumerable<Token></returns>
-        internal IEnumerable<Token> ParseLine( string text, int line ) {
-            this.Prepare( );
+        public IEnumerable<Token> ParseLine( string text, int line ) {
+            this.Prepare( null );
 
             if ( !string.IsNullOrEmpty( text ) )
-                this.Parse( text, ref line );
+                this.ParseText( text, ref line );
 
             return this.tokens;
         }

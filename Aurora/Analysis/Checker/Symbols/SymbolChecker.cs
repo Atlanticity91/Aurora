@@ -24,28 +24,24 @@
  * 
  **/
 
+using Aurora.Diagnostics;
 
-namespace Aurora.Utils {
+namespace Aurora.Analysis.Checker.Symbols {
 
     /// <summary>
-    /// LocationMeta sealed class
+    /// SymbolChecker class [ Diagnosable ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Define location metadata</note>
-    public sealed class LocationMeta {
-
-        public int Line { get; }
-        public int Position { get; }
+    /// <note>Defined Aurora symbol checker core class</note>
+    public class SymbolChecker : Diagnosable {
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="line" >Current line index</param>
-        /// <param name="position" >Position on the line</param>
-        public LocationMeta( int line, int position ) {
-            this.Line = line;
-            this.Position = position;
+        public SymbolChecker( )
+            : base( "Symbol" ) 
+        { 
         }
 
     }

@@ -32,7 +32,6 @@ using Aurora.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 
 namespace Aurora.Repler {
 
@@ -58,6 +57,48 @@ namespace Aurora.Repler {
         /// <note>Set current repl console style</note>
         /// <typeparam name="T"></typeparam>
         public void SetStyle<T>( ) where T : ReplConsoleStyle, new() => this.Style = new T( );
+
+        /// <summary>
+        /// Clear method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Clear a line of the console</note>
+        /// <param name="line_id" >Query line index</param>
+        protected void Clear( int line_id ) {
+            var buffer = new string( ' ', Console.WindowWidth );
+
+            Console.CursorVisible = false;
+            Console.SetCursorPosition( 0, line_id );
+            Console.Write( buffer );
+            Console.SetCursorPosition( 0, line_id );
+        }
+
+        /// <summary>
+        /// Clear method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Clear some lines of the console</note>
+        /// <param name="lower" >Lower line index</param>
+        /// <param name="upper" >Upper line index</param>
+        protected void Clear( int lower, int upper ) {
+            var buffer = new string( ' ', Console.WindowWidth );
+
+            Console.CursorVisible = false;
+
+            while ( lower < upper ) {
+                Console.SetCursorPosition( 0, lower++ );
+                Console.Write( buffer );
+            }
+
+            Console.SetCursorPosition( 0, upper );
+        }
+
+        /// <summary>
+        /// Clear method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Clear the entire console</note>
+        public void Clear( ) => this.Clear( 0, Console.WindowHeight );
 
         /// <summary>
         /// Display method
@@ -120,6 +161,71 @@ namespace Aurora.Repler {
         }
 
         /// <summary>
+        /// DisplayNodeTokens method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Display token from syntax node</note>
+        /// <param name="tokens" >Token array</param>
+        private void DisplayNodeTokens( IEnumerable<Token> tokens ) {
+            var color = (Color)null;
+
+            foreach ( var token in tokens ) {
+                if ( token != null ) {
+                    if ( token.IsSeparator )
+                        color = this.Style.Separator;
+                    else if ( token.IsOperator )
+                        color = this.Style.Operator;
+                    else if ( token.IsLiteral )
+                        color = this.Style.Literal;
+                    else if ( token.IsKeyword )
+                        color = this.Style.Keyword;
+                    else if ( token.IsType )
+                        color = this.Style.Type;
+                    else if ( token.IsString )
+                        color = this.Style.String;
+                    else
+                        color = this.Style.Text;
+
+                    this.Display( color, $"{token.Meta.Value} " );
+                }
+            }
+
+            Console.Write( "\n" );
+        }
+
+        /// <summary>
+        /// DisplaySyntaxNode method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Display a syntax node</note>
+        /// <param name="indent" >Indentation from left</param>
+        /// <param name="last" >If the current node is the last to display</param>
+        /// <param name="node" >Query syntax node to display</param>
+        private void DisplaySyntaxNode( string indent, bool last, SyntaxNode node ) {
+            var tokens = node.Tokens;
+
+            if ( tokens != null )
+                this.DisplayNodeTokens( tokens );
+
+            indent += (last) ? "   " : "│  ";
+
+            foreach ( var child in node.Childs )
+                this.Display( child, indent, child == node.Childs.LastOrDefault( ) );
+        }
+
+        /// <summary>
+        /// DisplayStringNode method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Display a string syntax node</note>
+        /// <param name="node" >Query syntax node to display</param>
+        private void DisplayStringNode( SyntaxNode node ) {
+            var str = ((StringNode)node).GetString( );
+
+            this.Display( this.Style.String, $"{str}\n" );
+        }
+
+        /// <summary>
         /// Display method
         /// </summary>
         /// <author>ALVES Quentin</author>
@@ -134,38 +240,10 @@ namespace Aurora.Repler {
 
                     this.Display( this.Style.Text, $"{indent}{maker} [ {node.Type} ] " );
 
-                    var tokens = node.Tokens;
-                    if ( tokens != null ) {
-                        var color = (Color)null;
-
-                        foreach ( var token in tokens ) {
-                            if ( token != null ) {
-                                if ( token.IsSeparator )
-                                    color = this.Style.Separator;
-                                else if ( token.IsOperator )
-                                    color = this.Style.Operator;
-                                else if ( token.IsLiteral )
-                                    color = this.Style.Literal;
-                                else if ( token.IsKeyword )
-                                    color = this.Style.Keyword;
-                                else if ( token.IsType )
-                                    color = this.Style.Type;
-                                else if ( token.IsString )
-                                    color = this.Style.String;
-                                else
-                                    color = this.Style.Text;
-
-                                this.Display( color, $"{token.Meta.Value} " );
-                            }
-                        }
-
-                        Console.Write( "\n" );
-                    }
-
-                    indent += (last) ? "   " : "│  ";
-
-                    foreach ( var child in node.Childs )
-                        this.Display( child, indent, child == node.Childs.LastOrDefault( ) );
+                    if ( node.Type != ENodeTypes.ENT_STRING )
+                        this.DisplaySyntaxNode( indent, last, node );
+                    else
+                        this.DisplayStringNode( node );
                 } else
                     this.Display( this.Style.WarnDiag, "- End Of File \n" );
             }

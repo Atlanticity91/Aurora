@@ -41,6 +41,7 @@ namespace Aurora.Diagnostics {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
+        /// <param name="emitter" >Name of diagnostic emitter</param>
         public Diagnosable( string emitter ) => this.Report = new DiagnosticReport( emitter );
 
         /// <summary>

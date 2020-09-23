@@ -78,6 +78,15 @@ namespace Aurora.Analysis.Syntax {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
+        public SyntaxNode( ) {
+            this.Type = ENodeTypes.ENT_UNKNOW;
+            this.Token = null;
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <author>ALVES Quentin</author>
         /// <param name="type" >Type of the new syntax node</param>
         /// <param name="token" >Token that generate the node</param>
         public SyntaxNode( ENodeTypes type, Token token ) {

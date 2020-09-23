@@ -42,11 +42,12 @@ namespace Aurora.Repler {
     /// <note>Defined Aurora Repler editor core code</note>
     public class ReplEditor : ReplConsole {
 
+        protected bool is_running;
         private IEnumerable<ReplControlMeta> controls;
         private IEnumerable<ReplCommandMeta> commands;
-        private LocationMeta cursor;
-        private Lexer lexer;
-        protected bool is_running;
+        protected ReplDocumentManager documents;
+        protected Lexer lexer;
+        protected LocationMeta cursor;
 
         /// <summary>
         /// Constructor
@@ -59,11 +60,12 @@ namespace Aurora.Repler {
 
             this.SetStyle<ReplEditorStyle>( );
 
+            this.is_running = true;
             this.controls = new List<ReplControlMeta>( );
             this.commands = new List<ReplCommandMeta>( );
-            this.cursor = new LocationMeta( 0, 0 );
+            this.documents = new ReplDocumentManager( );
             this.lexer = new Lexer( );
-            this.is_running = true;
+            this.cursor = new LocationMeta( 0, 0 );
 
             this.Initialize( );
         }
@@ -98,13 +100,43 @@ namespace Aurora.Repler {
             this.RegisterCommand<ReplEditor>( AttributeHelper.DEFAULT_FLAGS );
         }
 
+        protected virtual bool ExecControl( MethodInfo method ) {
+            if ( method.ReturnType != typeof( bool ) ) {
+                method.Invoke( (!method.IsStatic) ? this : null, null );
+
+                return true;
+            }
+
+            return (bool)method.Invoke( (!method.IsStatic) ? this : null, null );
+        }
+
+        protected virtual void Refresh( ) {
+
+        }
+
         /// <summary>
         /// Run method
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Run current Aurora repler editor instance</note>
-        public void Run( ) {
+        public virtual void Run( ) {
             while ( this.is_running ) {
+                var key_info = Console.ReadKey( true );
+                var state = false;
+
+                foreach ( var control in this.controls ) {
+                    if ( control.Key != key_info.Key || control.Modifier != key_info.Modifiers )
+                        continue;
+
+                    state = this.ExecControl( control.Action );
+                    
+                    break;
+                }
+
+                if ( !state && key_info.Key != ConsoleKey.Backspace && key_info.KeyChar >= ' ' )
+                    break;
+
+                this.Refresh( );
             }
         }
 

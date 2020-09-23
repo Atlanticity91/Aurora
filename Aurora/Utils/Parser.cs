@@ -24,74 +24,62 @@
  * 
  **/
 
-using Aurora.Analysis.Checker.Symbols;
-using Aurora.Analysis.Checker.Types;
-using Aurora.Analysis.Syntax;
-using Aurora.Utils;
+using Aurora.Diagnostics;
 using System.Collections.Generic;
 
-namespace Aurora.Analysis.Checker {
+namespace Aurora.Utils {
 
     /// <summary>
-    /// Analyser class [ Parser ]
+    /// Parser abstract generic class
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora analyser core class</note>
-    public class Analyser : Parser<SyntaxNode> {
-
-        protected SymbolChecker symbol_checker;
-        protected TypeChecker type_checker;
+    /// <note>Defined Aurora Parser core code</note>
+    /// <typeparam name="T" >Type of element parsed</typeparam>
+    public abstract class Parser<T> : Diagnosable {
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        public Analyser( )
-            : base( "Analyser" ) 
-        { 
-        }
+        /// <param name="name" ></param>
+        public Parser( string name )
+            : base( name ) => this.Initialize( );
 
         /// <summary>
-        /// SetSymbolChecker generic method
+        /// Initialize abstract method
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Set current symbol checker of analyser</note>
-        /// <typeparam name="T" >Query symbol checker</typeparam>
-        public void SetSymbolChecker<T>( ) where T : SymbolChecker, new( ) => this.symbol_checker = new T( );
+        /// <note>Initialize current parser instance</note>
+        protected abstract void Initialize( );
 
         /// <summary>
-        /// SetTypeChecker generic method
+        /// Prepare abstract method
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Set current type checker of analyser</note>
-        /// <typeparam name="T" >Query type checker</typeparam>
-        public void SetTypeChecker<T>( ) where T : TypeChecker, new( ) => this.type_checker = new T( );
+        /// <note>Prepare current parser instance</note>
+        /// <param name="elements" >Enumeration of elements to parse</param>
+        protected abstract void Prepare( IEnumerable<T> elements );
 
         /// <summary>
-        /// Initialize method
+        /// InternalParse abstract method
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Initialize current analyser instance</note>
-        protected override void Initialize( ) {
-            this.SetSymbolChecker<SymbolChecker>( );
-            this.SetTypeChecker<TypeChecker>( );
-        }
+        /// <note>Parse method for current parser instance</note>
+        /// <param name="elements" >Enumeration of elements to parse</param>
+        protected abstract void InternalParse( IEnumerable<T> elements );
 
         /// <summary>
-        /// Prepare method
+        /// Parse abstract method
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Prepare the analyser for compilation</note>
-        protected override void Prepare( IEnumerable<SyntaxNode> nodes ) => this.ClearDiags( );
-
-        /// <summary>
-        /// InternalParse method
-        /// </summary>
-        /// <author>ALVES Quentin</author>
-        /// <note>Parse syntax nodes for type checking</note>
-        /// <param name="nodes" >Current syntax node list</param>
+        /// <note>Parse api method for current parser instance</note>
+        /// <param name="elements" >Enumeration of elements to parse</param>
         /// <returns>DiagnosticReport</returns>
-        protected override void InternalParse( IEnumerable<SyntaxNode> nodes ) {
+        public DiagnosticReport Parse( IEnumerable<T> elements ) {
+            this.Prepare( elements );
+            this.InternalParse( elements );
+
+            return this.Report;
         }
 
     }

@@ -24,43 +24,48 @@
  * 
  **/
 
-using Aurora.Analysis;
-using Aurora.Repler;
-using Aurora.Runtime;
+using Aurora.Analysis.Lexem;
+using System.Collections.Generic;
 
-namespace Aurora {
+namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// Program sealed class
+    /// StringNode class [ SyntaxNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    public sealed class Program {
+    /// <note>Defined Aurora string node core class</note>
+    public class StringNode : SyntaxNode {
+
+        public Token End { get; }
+        public IEnumerable<Token> Text { get; }
 
         /// <summary>
-        /// Main static method
+        /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <note>Program main entry point</note>
-        /// <param name="args" >Arguments pass to the program.</param>
-        public static void Main( string[] args ) {
-            var console = new ReplConsole( );
-            var compiler = new Compiler( );
-            var evaluator = new Evaluator( );
+        /// <param name="start" >String start delimiter</param>
+        /// <param name="text" >Text of the string</param>
+        /// <param name="end" >String end delimiter</param>
+        public StringNode( Token start, IEnumerable<Token> text, Token end )
+            : base( ENodeTypes.ENT_STRING, start ) 
+        {
+            this.Text = text;
+            this.End = end;
+        }
 
-            var result = compiler.Compile( "test = 2 * ( 2 + 4 )" );
-            var evaluations = evaluator.Evaluate( compiler.Nodes );
+        /// <summary>
+        /// GetString function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Get current string value</note>
+        /// <returns>string</returns>
+        public string GetString( ) {
+            var text = "";
 
-            // Display all compilation error
-            console.Display( compiler );
+            foreach ( var element in this.Text )
+                text += $"{element.Text} ";
 
-            // Display current compilation token list
-            //console.Display( compiler.Tokens );
-
-            // Display current compilation syntax node list
-            console.Display( compiler.Nodes );
-
-            // Display expression evaluation
-            console.Display( evaluations );
+            return $"\"{text.Substring( 0, text.Length - 1)}\"";
         }
 
     }

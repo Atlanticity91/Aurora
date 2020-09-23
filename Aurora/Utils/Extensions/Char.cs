@@ -68,12 +68,46 @@ namespace Aurora.Utils {
                 ( query > 122 && query < 127 )
             )
                 return ECharTypes.ECT_SYMBOL;
-            else if ( query > 57 && query < 58 )
+            else if ( query > 47 && query < 58 )
                 return ECharTypes.ECT_NUMBER;
             else if ( query == ' ' || query == '\t' || query == '\n' )
                 return ECharTypes.ECT_BLANK;
 
             return ECharTypes.ECT_EOF;
+        }
+
+        /// <summary>
+        /// GetSubmissionEnd static extension function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note></note>
+        /// <param name="query" >Current caracter</param>
+        /// <param name="old" >Old caracter</param>
+        /// <returns>bool</returns>
+        public static bool GetSubmissionEnd( this char query, char old, int char_id ) {
+            var c_type = query.GetCharType( );
+            var o_type = old.GetCharType( );
+
+            if ( 
+                ( c_type == o_type && c_type != ECharTypes.ECT_SYMBOL ) || 
+                ( c_type == ECharTypes.ECT_LETTER && o_type == ECharTypes.ECT_NUMBER ) ||
+                ( c_type == ECharTypes.ECT_NUMBER && o_type == ECharTypes.ECT_LETTER ) ||
+                ( old == '+' && query == '=' ) ||
+                ( old == '-' && query == '=' ) ||
+                ( old == '*' && query == '=' ) ||
+                ( old == '/' && query == '=' ) ||
+                ( old == '%' && query == '=' ) ||
+                ( old == '=' && query == '=' ) ||
+                ( old == '!' && query == '=' ) ||
+                ( old == '>' && query == '=' ) ||
+                ( old == '<' && query == '=' ) ||
+                ( old == '+' && query == '+' ) ||
+                ( old == '-' && query == '-' ) ||
+                ( old == ':' && query == ':' ) 
+            ) 
+                return false;
+
+            return true;
         }
 
         /// <summary>

@@ -26,7 +26,7 @@
 
 using Aurora.Analysis.Lexem;
 using Aurora.Analysis.Syntax.Expressions;
-using Aurora.Diagnostics;
+using Aurora.Utils;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,15 +34,14 @@ namespace Aurora.Analysis.Syntax {
 
     // TODO : Add Boolean support
     // TODO : Add Condition expression support
-    // TODO : Add String support
     // TODO : Add Ternary support
 
     /// <summary>
-    /// Syntaxer class [ Diagnosable ]
+    /// Syntaxer class [ Parser ]
     /// </summary>
     /// <author>ALVES Quentin</author>
     /// <note>Defined Aurora syntaxer core class</note>
-    public class Syntaxer : Diagnosable {
+    public class Syntaxer : Parser<Token> {
 
         private Token[] tokens;
         private List<SyntaxNode> nodes;
@@ -63,12 +62,19 @@ namespace Aurora.Analysis.Syntax {
         }
 
         /// <summary>
-        /// Prepare virtual function
+        /// Initialize method
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Initialize current syntaxer</note>
+        protected override void Initialize( ) { }
+
+        /// <summary>
+        /// Prepare method
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Prepare the syntaxer for compilation</note>
         /// <param name="tokens" >Current token enumerable</param>
-        protected virtual void Prepare( IEnumerable<Token> tokens ) {
+        protected override void Prepare( IEnumerable<Token> tokens ) {
             this.ClearDiags( );
             this.tokens = tokens.ToArray( );
             this.nodes.Clear( );
@@ -225,14 +231,30 @@ namespace Aurora.Analysis.Syntax {
         /// <note>Parse ternary expression syntax</note>
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseTernaryExpression( ) {
-            // TODO : Add Ternary Expression support
-
             var op = this.Match( ETokenTypes.ETT_OP_TERNARY );
             var condition = (SyntaxNode)null;
             var true_ = (SyntaxNode)null;
             var false_ = (SyntaxNode)null;
 
             return new TernaryExpressionNode( op, condition, true_, false_ );
+        }
+
+        /// <summary>
+        /// ParseString virtual function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Parse string to string node</note>
+        /// <param name="start" >String start delimiter token</param>
+        /// <returns>SyntaxNode</returns>
+        protected virtual SyntaxNode ParseString( Token start ) {
+            var text = new List<Token>( );
+
+            while ( this.Current.Type != ETokenTypes.ETT_STRING )
+                text.Add( this.Next( ) );
+
+            var end = this.Match( ETokenTypes.ETT_STRING );
+
+            return new StringNode( start, text, end );
         }
 
         /// <summary>
@@ -260,7 +282,7 @@ namespace Aurora.Analysis.Syntax {
             else if ( token.IsControlFlow )
                 return new SyntaxNode( ENodeTypes.ENT_CONTROL_FLOW, token );
             else if ( token.IsString )
-                return new SyntaxNode( ENodeTypes.ENT_STRING, token );
+                return this.ParseString( token );
             else if ( token.Type == ETokenTypes.ETT_SEP_OPEN_PARANTHESIS )
                 return this.ParseParanthesisExpression( token );
 
@@ -566,7 +588,6 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseSyntax( ) {
             switch ( this.Current.Type ) {
-                case ETokenTypes.ETT_IDENTIFIER : return this.ParseExpression( );
                 case ETokenTypes.ETT_SEP_OPEN_HUG : return this.ParseHugs( );
 
                 case ETokenTypes.ETT_KEYWORD_VAR :
@@ -584,19 +605,16 @@ namespace Aurora.Analysis.Syntax {
                 default : break;
             }
 
-            return this.ParseToken( );
+            return this.ParseExpression( );
         }
 
         /// <summary>
-        /// Parse function
+        /// InternalParse method
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <note>Parse token list to syntax nodes</note>
         /// <param name="tokens" >Query node_id token list</param>
-        /// <returns>DiagnosticReport</returns>
-        public DiagnosticReport Parse( IEnumerable<Token> tokens ) {
-            this.Prepare( tokens );
-
+        protected override void InternalParse( IEnumerable<Token> tokens ) {
             while ( !this.Current.IsEOF ) {
                 var tree = this.ParseSyntax( );
 
@@ -604,8 +622,6 @@ namespace Aurora.Analysis.Syntax {
             }
 
             this.tokens = null;
-
-            return this.Report;
         }
 
     }
