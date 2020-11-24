@@ -30,31 +30,31 @@ using System.Collections.Generic;
 namespace Aurora.Analysis.Syntax {
 
     /// <summary>
-    /// ElseStatementNode class [ StatementNode ]
+    /// ConditionExpressionNode class [ ExpressionNode ]
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora else statement core class</note>
-    public class ElseStatementNode : StatementNode {
+    /// <note>Defined Aurora condition expression node core class</note>
+    public class ConditionExpressionNode : ExpressionNode {
 
-        public Token End { get; }
-        public SyntaxNode Sub_if { get; }
-        public IEnumerable<SyntaxNode> Body { get; }
+        public Token Not { get; }
+        public SyntaxNode Left { get; }
+        public SyntaxNode Right { get; }
 
         public override IEnumerable<Token> Tokens {
             get {
+                if ( this.Not != null )
+                    yield return this.Not;
+
                 yield return this.Token;
-                yield return this.End;
             }
         }
 
         public override IEnumerable<SyntaxNode> Childs {
             get {
-                if ( this.Sub_if != null )
-                    yield return this.Sub_if;
-                else {
-                    foreach ( var content in this.Body )
-                        yield return content;
-                }
+                yield return this.Left;
+
+                if ( this.Right != null )
+                    yield return this.Right;
             }
         }
 
@@ -62,16 +62,16 @@ namespace Aurora.Analysis.Syntax {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="keyword" >Current else statement keyword</param>
-        /// <param name="sub_if" >Current else statement sub if statement</param>
-        /// <param name="body" >Current else statement body</param>
-        /// <param name="end" >Current else statement end keyword</param>
-        public ElseStatementNode( Token keyword, SyntaxNode sub_if, IEnumerable<SyntaxNode> body, Token end ) 
-            : base( keyword ) 
+        /// <param name="not" >Not token if the condition is a negation</param>
+        /// <param name="left" >Left expression</param>
+        /// <param name="operator_" >Condition operator.</param>
+        /// <param name="right" >Right expression</param>
+        public ConditionExpressionNode( Token not, SyntaxNode left, Token operator_, SyntaxNode right )
+            : base( operator_ ) 
         {
-            this.Sub_if = sub_if;
-            this.Body = body;
-            this.End = end;
+            this.Not = not;
+            this.Left = left;
+            this.Right = right;
         }
 
     }

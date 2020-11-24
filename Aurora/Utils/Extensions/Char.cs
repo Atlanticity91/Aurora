@@ -103,7 +103,9 @@ namespace Aurora.Utils {
                 ( old == '<' && query == '=' ) ||
                 ( old == '+' && query == '+' ) ||
                 ( old == '-' && query == '-' ) ||
-                ( old == ':' && query == ':' ) 
+                ( old == ':' && query == ':' ) ||
+                ( old == '&' && query == '&' ) ||
+                ( old == '|' && query == '|' ) 
             ) 
                 return false;
 

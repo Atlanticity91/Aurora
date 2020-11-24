@@ -106,6 +106,7 @@ namespace Aurora.Analysis.Lexem {
             this.Register( "/=", ETokenTypes.ETT_OP_DEQU );
             this.Register( "%", ETokenTypes.ETT_OP_MOD );
             this.Register( "%=", ETokenTypes.ETT_OP_MDEQU );
+            this.Register( "not", ETokenTypes.ETT_OP_NOT );
             this.Register( "!", ETokenTypes.ETT_OP_NOT );
             this.Register( "==", ETokenTypes.ETT_OP_EQU );
             this.Register( "!=", ETokenTypes.ETT_OP_NEQU );
@@ -124,7 +125,9 @@ namespace Aurora.Analysis.Lexem {
             this.Register( "^", ETokenTypes.ETT_OP_UOR );
             this.Register( "~", ETokenTypes.ETT_OP_UCOMP );
 
+            this.Register( "and", ETokenTypes.ETT_COND_AND );
             this.Register( "&&", ETokenTypes.ETT_COND_AND );
+            this.Register( "or", ETokenTypes.ETT_COND_OR );
             this.Register( "||", ETokenTypes.ETT_COND_OR );
 
             this.Register( "bool", ETokenTypes.ETT_TYPE_BOOL );

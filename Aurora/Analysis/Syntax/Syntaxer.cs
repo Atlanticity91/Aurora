@@ -432,22 +432,41 @@ namespace Aurora.Analysis.Syntax {
             return body;
         }
 
-        public SyntaxNode ParseCondition( ) {
-            var expression = (SyntaxNode)null;
+        /// <summary>
+        /// ParseConditionStatement virtual function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Parse condition statement</note>
+        /// <returns>SyntaxNode</returns>
+        public virtual SyntaxNode ParseConditionStatement( ) {
+            var operators = new List<Token>( );
+            var conditions = new List<SyntaxNode>( );
 
-            while ( true ) {
-                if ( this.Current.Type == ETokenTypes.ETT_KEYWORD_THEN || this.Current.Type == ETokenTypes.ETT_SEP_SEMICOLON )
-                    break;
+            while ( 
+                !this.Current.IsEOF && 
+                this.Current.Type != ETokenTypes.ETT_KEYWORD_THEN &&
+                this.Current.Type != ETokenTypes.ETT_KEYWORD_END
+            ) {
+                if ( this.Current.IsConditionOperator )
+                    operators.Add( this.Next( ) );
 
-                expression = this.ParseBinaryExpression( 0 );
-                var operand = this.Match( ETokenTypes.ETT_SEP_SEMICOLON );
-                var right = this.ParseBinaryExpression( 0 );
-                // EXP
-                // OPERATION
-                // EXP
+                var not = (Token)null;
+
+                if ( this.Current.Type == ETokenTypes.ETT_OP_NOT )
+                    not = this.Next( );
+
+                var left = this.ParseExpression( );
+
+                if ( this.Current.IsOperator ) {
+                    var operator_ = this.Next( );
+                    var right = this.ParseExpression( );
+
+                    conditions.Add( new ConditionExpressionNode( not, left, operator_, right ) );
+                } else
+                    conditions.Add( new ConditionExpressionNode( not, left, null, null ) );
             }
             
-            return expression;
+            return new ConditionStatementNode( operators, conditions );
         }
 
         /// <summary>
@@ -458,7 +477,7 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseIfStatement( ) {
             var keyword = this.Next( );
-            var condition = this.ParseCondition( ); //this.ParseExpression( );
+            var condition = this.ParseConditionStatement( );
             var then = this.Match( ETokenTypes.ETT_KEYWORD_THEN );
             var body = this.ParseBody( );
             var end = this.Match( ETokenTypes.ETT_KEYWORD_END );
@@ -619,6 +638,13 @@ namespace Aurora.Analysis.Syntax {
 
                 case ETokenTypes.ETT_KEYWORD_IMPORT :
                     return this.ParseImportDeclaration( );
+
+
+
+                case ETokenTypes.ETT_KEYWORD_IF:
+                    return this.ParseIfStatement( );
+
+
 
                 default : break;
             }

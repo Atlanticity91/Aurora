@@ -26,6 +26,7 @@
 
 using Aurora.Analysis.Lexem;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aurora.Analysis.Syntax {
 
@@ -34,27 +35,29 @@ namespace Aurora.Analysis.Syntax {
     /// </summary>
     /// <author>ALVES Quentin</author>
     /// <note>Defined Aurora else statement core class</note>
-    public class ElseStatementNode : StatementNode {
+    public class ConditionStatementNode : StatementNode {
 
-        public Token End { get; }
-        public SyntaxNode Sub_if { get; }
+        public IEnumerable<Token> Operators { get; }
         public IEnumerable<SyntaxNode> Body { get; }
 
         public override IEnumerable<Token> Tokens {
             get {
                 yield return this.Token;
-                yield return this.End;
+
+                if ( this.Operators != null ) {
+                    foreach ( var _operator in this.Operators )
+                        yield return _operator;
+                }
             }
         }
 
         public override IEnumerable<SyntaxNode> Childs {
             get {
-                if ( this.Sub_if != null )
-                    yield return this.Sub_if;
-                else {
+                if ( this.Body != null ) {
                     foreach ( var content in this.Body )
                         yield return content;
-                }
+                } else
+                    yield return null;
             }
         }
 
@@ -62,16 +65,13 @@ namespace Aurora.Analysis.Syntax {
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        /// <param name="keyword" >Current else statement keyword</param>
-        /// <param name="sub_if" >Current else statement sub if statement</param>
-        /// <param name="body" >Current else statement body</param>
-        /// <param name="end" >Current else statement end keyword</param>
-        public ElseStatementNode( Token keyword, SyntaxNode sub_if, IEnumerable<SyntaxNode> body, Token end ) 
-            : base( keyword ) 
+        /// <param name="operators" >List of all condition operators.</param>
+        /// <param name="body" >List of all condition expressions.</param>
+        public ConditionStatementNode( IEnumerable<Token> operators, IEnumerable<SyntaxNode> body )
+            : base( null ) 
         {
-            this.Sub_if = sub_if;
+            this.Operators = operators;
             this.Body = body;
-            this.End = end;
         }
 
     }

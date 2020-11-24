@@ -38,7 +38,7 @@ namespace Aurora.Analysis.Syntax {
 
         public Token Then { get; }
         public Token End { get; }
-        public SyntaxNode Condition { get; }
+        public SyntaxNode Conditions { get; }
         public IEnumerable<SyntaxNode> Body { get; }
 
         public override IEnumerable<Token> Tokens {
@@ -50,8 +50,11 @@ namespace Aurora.Analysis.Syntax {
         }
 
         public override IEnumerable<SyntaxNode> Childs {
-            get { 
-                yield return this.Condition;
+            get {
+                if ( this.Conditions.Childs != null ) {
+                    foreach ( var condition in this.Conditions.Childs )
+                        yield return condition;
+                }
 
                 foreach ( var content in this.Body )
                     yield return content;
@@ -63,14 +66,14 @@ namespace Aurora.Analysis.Syntax {
         /// </summary>
         /// <author>ALVES Quentin</author>
         /// <param name="keyword" >Current if statement keyword</param>
-        /// <param name="condition" >Current if statement condition expression</param>
+        /// <param name="conditions" >Current if statement conditions expression</param>
         /// <param name="then" >Current if statement then keyword</param>
         /// <param name="body" >Current function declaration body</param>
         /// <param name="end" >Current if statement end keyword</param>
-        public IfStatementNode( Token keyword, SyntaxNode condition, Token then, IEnumerable<SyntaxNode> body, Token end ) 
+        public IfStatementNode( Token keyword, SyntaxNode conditions, Token then, IEnumerable<SyntaxNode> body, Token end ) 
             : base( keyword ) 
         {
-            this.Condition = condition;
+            this.Conditions = conditions;
             this.Then = then;
             this.Body = body;
             this.End = end;

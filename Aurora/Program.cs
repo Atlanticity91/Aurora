@@ -47,11 +47,7 @@ namespace Aurora {
             var compiler = new Compiler( );
             var evaluator = new Evaluator( );
 
-            string f = @" function re( k : bool )\
-                            if k then
-                                var j = 10 * 10;
-                            end
-                          end";
+            string f = @"function re() if 10 * ( 10 + 5 ) == 10 and ! ( 10 + 10 ) != 10 then end end";
 
             var result = compiler.Compile( f );
             var evaluations = evaluator.Evaluate( compiler.Nodes );
