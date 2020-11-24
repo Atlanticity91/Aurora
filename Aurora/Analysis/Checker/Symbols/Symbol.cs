@@ -24,35 +24,30 @@
  * 
  **/
 
+using Aurora.Analysis.Checker.Types;
 using Aurora.Analysis.Syntax;
-using Aurora.Utils;
-using System.Collections.Generic;
 
 namespace Aurora.Analysis.Checker.Symbols {
 
     /// <summary>
-    /// SymbolChecker class [ Parser ]
+    /// Symbol class 
     /// </summary>
     /// <author>ALVES Quentin</author>
-    /// <note>Defined Aurora symbol checker core class</note>
-    public class SymbolChecker : Parser<SyntaxNode> {
+    /// <note>Defined Aurora symbol core class</note>
+    public class Symbol {
+
+        public SyntaxNode Node { get; }
+        public EAuroraTypes Type { get; }
+
+        public string Name => this.Node.TokenText;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
-        public SymbolChecker( )
-            : base( "Symbol" ) 
+        public Symbol( SyntaxNode node ) 
         {
-        }
-
-        protected override void Initialize( ) {
-        }
-
-        protected override void InternalParse( IEnumerable<SyntaxNode> elements ) {
-        }
-
-        protected override void Prepare( IEnumerable<SyntaxNode> elements ) {
+            this.Node = node;
         }
 
     }

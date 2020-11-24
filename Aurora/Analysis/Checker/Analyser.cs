@@ -92,6 +92,10 @@ namespace Aurora.Analysis.Checker {
         /// <param name="nodes" >Current syntax node list</param>
         /// <returns>DiagnosticReport</returns>
         protected override void InternalParse( IEnumerable<SyntaxNode> nodes ) {
+            this.Merge( this.symbol_checker.Parse( nodes ) );
+
+            if ( this.Report.ErrrCount == 0 )
+                this.Merge( this.type_checker.Parse( null ) );
         }
 
     }

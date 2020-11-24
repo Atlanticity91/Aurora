@@ -124,6 +124,9 @@ namespace Aurora.Analysis.Lexem {
             this.Register( "^", ETokenTypes.ETT_OP_UOR );
             this.Register( "~", ETokenTypes.ETT_OP_UCOMP );
 
+            this.Register( "&&", ETokenTypes.ETT_COND_AND );
+            this.Register( "||", ETokenTypes.ETT_COND_OR );
+
             this.Register( "bool", ETokenTypes.ETT_TYPE_BOOL );
             this.Register( "byte", ETokenTypes.ETT_TYPE_INT8 );
             this.Register( "short", ETokenTypes.ETT_TYPE_INT16 );

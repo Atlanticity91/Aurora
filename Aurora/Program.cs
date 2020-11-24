@@ -47,7 +47,13 @@ namespace Aurora {
             var compiler = new Compiler( );
             var evaluator = new Evaluator( );
 
-            var result = compiler.Compile( "test = 2 * ( 2 + 4 )" );
+            string f = @" function re( k : bool )\
+                            if k then
+                                var j = 10 * 10;
+                            end
+                          end";
+
+            var result = compiler.Compile( f );
             var evaluations = evaluator.Evaluate( compiler.Nodes );
 
             // Display all compilation error

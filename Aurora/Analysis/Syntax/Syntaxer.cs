@@ -181,7 +181,7 @@ namespace Aurora.Analysis.Syntax {
             else
                 expression = this.ParseToken( );
 
-            while ( true ) {
+            while ( this.Current.Type != ETokenTypes.ETT_SEP_SEMICOLON ) {
                 var _precedence = this.Current.Precedence( );
 
                 if ( _precedence == 0 || _precedence <= precedence )
@@ -407,7 +407,7 @@ namespace Aurora.Analysis.Syntax {
 
             while ( !this.Current.IsEOF && this.Current.Type != ETokenTypes.ETT_KEYWORD_END ) {
                 switch ( this.Current.Type ) {
-                    case ETokenTypes.ETT_IDENTIFIER : body.Add( this.ParseExpression( ) ); break;
+                    case ETokenTypes.ETT_IDENTIFIER : body.Add( this.ParseExpression( ) ); this.Next( ); break;
                     case ETokenTypes.ETT_SEP_OPEN_HUG : body.Add( this.ParseHugs( ) ); break;
                     case ETokenTypes.ETT_KEYWORD_VAR : body.Add( this.ParseVariableDeclaration( ) ); break;
                     case ETokenTypes.ETT_KEYWORD_RETURN : body.Add( this.ParseReturnStatement( ) ); break;
@@ -432,6 +432,24 @@ namespace Aurora.Analysis.Syntax {
             return body;
         }
 
+        public SyntaxNode ParseCondition( ) {
+            var expression = (SyntaxNode)null;
+
+            while ( true ) {
+                if ( this.Current.Type == ETokenTypes.ETT_KEYWORD_THEN || this.Current.Type == ETokenTypes.ETT_SEP_SEMICOLON )
+                    break;
+
+                expression = this.ParseBinaryExpression( 0 );
+                var operand = this.Match( ETokenTypes.ETT_SEP_SEMICOLON );
+                var right = this.ParseBinaryExpression( 0 );
+                // EXP
+                // OPERATION
+                // EXP
+            }
+            
+            return expression;
+        }
+
         /// <summary>
         /// ParseIfStatement virtual function
         /// </summary>
@@ -440,7 +458,7 @@ namespace Aurora.Analysis.Syntax {
         /// <returns>SyntaxNode</returns>
         protected virtual SyntaxNode ParseIfStatement( ) {
             var keyword = this.Next( );
-            var condition = this.ParseExpression( );
+            var condition = this.ParseCondition( ); //this.ParseExpression( );
             var then = this.Match( ETokenTypes.ETT_KEYWORD_THEN );
             var body = this.ParseBody( );
             var end = this.Match( ETokenTypes.ETT_KEYWORD_END );
@@ -605,7 +623,12 @@ namespace Aurora.Analysis.Syntax {
                 default : break;
             }
 
-            return this.ParseExpression( );
+            var expression = this.ParseExpression( );
+
+            if ( this.Current.Type == ETokenTypes.ETT_SEP_SEMICOLON )
+                this.Next( );
+
+            return expression;
         }
 
         /// <summary>

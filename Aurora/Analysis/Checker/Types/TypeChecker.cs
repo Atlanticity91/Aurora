@@ -24,16 +24,18 @@
  * 
  **/
 
-using Aurora.Diagnostics;
+using Aurora.Analysis.Syntax;
+using Aurora.Utils;
+using System.Collections.Generic;
 
 namespace Aurora.Analysis.Checker.Types {
 
     /// <summary>
-    /// TypeChecker class [ Diagnosable ]
+    /// TypeChecker class [ Parser ]
     /// </summary>
     /// <author>ALVES Quentin</author>
     /// <note>Defined Aurora type checker core class</note>
-    public class TypeChecker : Diagnosable {
+    public class TypeChecker : Parser<SyntaxNode> {
 
         /// <summary>
         /// Constructor
@@ -42,6 +44,15 @@ namespace Aurora.Analysis.Checker.Types {
         public TypeChecker( ) 
             : base( "Type" )
         {
+        }
+
+        protected override void Initialize( ) {
+        }
+
+        protected override void InternalParse( IEnumerable<SyntaxNode> elements ) {
+        }
+
+        protected override void Prepare( IEnumerable<SyntaxNode> elements ) {
         }
 
     }

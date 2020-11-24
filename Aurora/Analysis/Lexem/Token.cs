@@ -96,6 +96,9 @@ namespace Aurora.Analysis.Lexem {
         ETT_OP_UOR,
         ETT_OP_UCOMP,
 
+        ETT_COND_AND,
+        ETT_COND_OR,
+
         ETT_TYPE,
         ETT_TYPE_BOOL,
         ETT_TYPE_INT8,
@@ -139,6 +142,7 @@ namespace Aurora.Analysis.Lexem {
         public bool IsSemicolon => this.Type == ETokenTypes.ETT_SEP_SEMICOLON;
         public bool IsOperator => this.interal_IsOperator( );
         public bool IsUnaryOperator => this.interal_IsUnaryOperator( );
+        public bool IsConditionOperator => this.internal_IsConditionOperator( );
         public bool IsSeparator => this.interal_IsSeparator( );
         public bool IsType => this.interal_IsType( );
         public bool IsLiteral => this.interal_IsLiteral( );
@@ -242,6 +246,14 @@ namespace Aurora.Analysis.Lexem {
 
             return false;
         }
+
+        /// <summary>
+        /// internal_IsConditionOperator internal function
+        /// </summary>
+        /// <author>ALVES Quentin</author>
+        /// <note>Get if the current token is a condition operator</note>
+        /// <returns>bool</returns>
+        internal bool internal_IsConditionOperator( ) => this.Type == ETokenTypes.ETT_COND_AND || this.Type == ETokenTypes.ETT_COND_OR;
 
         /// <summary>
         /// interal_IsSeparator internal function

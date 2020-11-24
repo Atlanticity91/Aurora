@@ -24,6 +24,7 @@
  * 
  **/
 
+using Aurora.Utils;
 using System.Collections.Generic;
 
 namespace Aurora.Repler.Editor {
@@ -35,11 +36,16 @@ namespace Aurora.Repler.Editor {
     /// <note>Defined Aurora Repler document core code</note>
     public sealed class ReplDocument {
 
+        protected LocationMeta cursor;
+
+        public LocationMeta Cursor => this.cursor;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <author>ALVES Quentin</author>
         public ReplDocument( ) {
+            this.cursor = new LocationMeta( 0, 0 );
         }
 
     }
