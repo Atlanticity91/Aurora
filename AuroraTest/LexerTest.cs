@@ -1,5 +1,15 @@
 /**
  * 
+ *       /\                             
+ *      /  \  _   _ _ __ ___  _ __ __ _ 
+ *     / /\ \| | | | '__/ _ \| '__/ _` |
+ *    / ____ \ |_| | | | (_) | | | (_| |
+ *   /_/    \_\__,_|_|  \___/|_|  \__,_|
+ *   
+ * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+ * SPDX-License-Identifier : MIT
+ * Project source : https://github.com/Atlanticity91/Aurora
+ *
  * MIT License
  *
  * Copyright( c ) 2020 ALVES Quentin

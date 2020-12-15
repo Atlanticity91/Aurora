@@ -1,5 +1,15 @@
 ﻿/**
  * 
+ *       /\                             
+ *      /  \  _   _ _ __ ___  _ __ __ _ 
+ *     / /\ \| | | | '__/ _ \| '__/ _` |
+ *    / ____ \ |_| | | | (_) | | | (_| |
+ *   /_/    \_\__,_|_|  \___/|_|  \__,_|
+ *   
+ * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+ * SPDX-License-Identifier : MIT
+ * Project source : https://github.com/Atlanticity91/Aurora
+ *
  * MIT License
  *
  * Copyright( c ) 2020 ALVES Quentin
@@ -116,7 +126,9 @@ namespace Aurora.Analysis {
         /// <returns>object</returns>
         private object Process( ) {
             this.Merge( this.Lexer.Parse( this.loader ) );
-            this.Merge( this.Syntaxer.Parse( this.Tokens ) );
+            
+            if ( !this.HasError )
+                this.Merge( this.Syntaxer.Parse( this.Tokens ) );
 
             if ( !this.HasError )
                 this.Merge( this.Analyser.Parse( this.Nodes ) );
